@@ -273,7 +273,11 @@ text-shadow: 0 0 8px var(--gold-dark);
     display: block;
     text-decoration: none;
   }
-
+ .logo {
+    flex-grow: 1;
+    /* display: flex; */
+    justify-content: center;
+  }
   #menu-btn {
     display: block;
   }
