@@ -37,14 +37,15 @@ nav .logo {
   cursor: default;
 }
 
+
 nav ul {
   list-style: none;
-  display: flex;
-  gap: 35px;
-  margin: 10px 60px;
   padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 25px;
+  transition: none;
 }
-
 nav ul li a {
   color: var(--gold-dark);
   font-weight: 700;
@@ -236,25 +237,52 @@ color: var(--gold-dark);
 text-shadow: 0 0 8px var(--gold-dark);
 }
 
-/* Responsive */
+
+
+
+/* زرار الهامبرجر مخفي على الشاشات الكبيرة */
+#menu-btn {
+  display: none;
+  font-size: 30px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #DFCA75;
+}
+
+/* شاشة صغيرة */
 @media (max-width: 768px) {
-nav ul {
-gap: 18px;
+  nav ul {
+    position: fixed;
+    top: 0;
+    left: -100vw;  /* تحريك القائمة كاملة خارج الشاشة (100% من عرض الشاشة) */
+    width: 250px;
+    height: 100vh;
+    background-color: #111;
+    flex-direction: column;
+    padding-top: 60px;
+    gap: 30px;
+    transition: left 0.3s ease;
+    z-index: 1000;
+  }
+
+  nav ul li a {
+    color: #DFCA75;
+    font-size: 18px;
+    padding: 15px 20px;
+    display: block;
+    text-decoration: none;
+  }
+
+  #menu-btn {
+    display: block;
+  }
+
+  nav ul.active {
+    left: 0;
+  }
 }
-header {
-font-size: 36px;
-padding: 100px 20px 40px;
-}
-section h2 {
-font-size: 28px;
-}
-.perfume-gallery {
-gap: 15px;
-}
-.perfume-gallery img {
-width: 120px;
-height: 160px;
-}
-}
+
+
 
 
