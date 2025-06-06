@@ -1,32 +1,28 @@
-const menuBtn = document.getElementById('menu-btn');
-const menu = document.getElementById('menu');
-
-// تفعيل/تعطيل القائمة عند الضغط على زرار الهامبرجر
-menuBtn.addEventListener('click', (e) => {
-  e.stopPropagation(); // عشان الضغط ما يوصلش للوثيقة وينفذ إغلاق
-  menu.classList.toggle('active');
-});
-
-// لما تضغط على أي رابط داخل القائمة، إقفل القائمة
-menu.querySelectorAll('a').forEach(link => {
-  link.addEventListener('click', () => {
-    menu.classList.remove('active');
-  });
-});
-
-// لما تضغط في أي مكان في الصفحة خارج القائمة، إقفل القائمة لو مفتوحة
-document.addEventListener('click', (e) => {
-  if (menu.classList.contains('active')) {
-    // تأكد الضغط مش جوا القائمة ولا على زرار الهامبرجر
-    if (!menu.contains(e.target) && e.target !== menuBtn) {
-      menu.classList.remove('active');
-    }
-  }
-});
-
-// لو عندك سكشنات interactive-section وعايز إقفال القائمة لما تضغط عليهم:
-document.querySelectorAll('.interactive-section').forEach(section => {
-  section.addEventListener('click', () => {
-    menu.classList.remove('active');
-  });
+const swiper = new Swiper(".mySwiper", {
+  slidesPerView: 1,
+  spaceBetween: 20,
+  loop: true,
+  pagination: {
+    el: ".swiper-pagination",
+    clickable: true,
+  },
+  navigation: {
+    nextEl: ".swiper-button-next",
+    prevEl: ".swiper-button-prev",
+  },
+  centeredSlides: true,  // خليها مفعلة للهواتف فقط
+  breakpoints: {
+    768: {
+      slidesPerView: 2,
+      centeredSlides: false, // الغيها للشاشات الكبيرة عشان السلايدات تمشي عادي
+    },
+    992: {
+      slidesPerView: 3,
+      centeredSlides: false,
+    },
+    1200: {
+      slidesPerView: 4,
+      centeredSlides: false,
+    },
+  },
 });
