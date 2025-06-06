@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Order Now | VINDEX</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap">
-   <link rel="icon" href="img/vindex_logo_transparent.png" type="image/png" />
+  <link rel="icon" href="img/vindex_logo_transparent.png" type="image/png" />
   <style>
     body {
       background-color: #000;
@@ -15,6 +15,7 @@
       align-items: center;
       min-height: 100vh;
       padding: 20px;
+      margin: 0;
     }
 
     .form-container {
@@ -25,12 +26,14 @@
       max-width: 450px;
       width: 100%;
       box-shadow: 0 0 15px gold;
+      box-sizing: border-box;
     }
 
     h2 {
       text-align: center;
       color: gold;
       margin-bottom: 20px;
+      font-size: 24px;
     }
 
     input, textarea {
@@ -42,6 +45,8 @@
       background-color: #222;
       color: #fff;
       font-size: 16px;
+      box-sizing: border-box;
+      font-family: 'Cinzel', serif;
     }
 
     input[readonly] {
@@ -60,16 +65,24 @@
       cursor: pointer;
       transition: background 0.3s;
       width: 100%;
+      font-family: 'Cinzel', serif;
+      margin-top: 10px;
     }
 
     button:hover {
       background-color: #d4af37;
     }
 
+    button:disabled {
+      background-color: #555;
+      cursor: not-allowed;
+    }
+
     .message {
       text-align: center;
       margin-top: 15px;
       font-size: 16px;
+      min-height: 24px;
     }
 
     .message.success {
@@ -78,6 +91,11 @@
 
     .message.error {
       color: #f44336;
+    }
+
+    .message.loading {
+      color: gold;
+      font-style: italic;
     }
   </style>
 </head>
@@ -88,8 +106,8 @@
       <input type="text" id="product" name="product" readonly />
       <input type="text" name="name" placeholder="Your Name" required />
       <input type="tel" name="phone" placeholder="Phone Number" required />
-      <textarea name="address" placeholder="Delivery Address" required></textarea>
-      <button type="submit">Send Order</button>
+      <textarea name="address" placeholder="Delivery Address" rows="4" required></textarea>
+      <button type="submit" id="submitBtn">Send Order</button>
       <div class="message" id="formMessage"></div>
     </form>
   </div>
@@ -101,9 +119,15 @@
 
     const form = document.getElementById("orderForm");
     const message = document.getElementById("formMessage");
+    const submitBtn = document.getElementById("submitBtn");
 
-    form.addEventListener("submit", function (e) {
+    form.addEventListener("submit", async function (e) {
       e.preventDefault();
+      
+      // تعطيل الزر أثناء الإرسال
+      submitBtn.disabled = true;
+      message.textContent = "⏳ Processing your order...";
+      message.className = "message loading";
 
       const data = {
         product: form.product.value,
@@ -112,30 +136,45 @@
         address: form.address.value
       };
 
-   fetch("https://script.google.com/macros/s/AKfycbwyvWgUjzFs4FUiuTMKxIYkENFi_9YTqfH4QreRj8_mNTAGmud45_VYunbrzpkEs5bVww/exec", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(data)
-})
+      try {
+        // استخدم await مع fetch
+        const response = await fetch("https://script.google.com/macros/s/AKfycbwyvWgUjzFs4FUiuTMKxIYkENFi_9YTqfH4QreRj8_mNTAGmud45_VYunbrzpkEs5bVww/exec", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        });
 
-      .then(res => res.json())
-      .then(response => {
-        if (response.result === "success") {
+        // تحقق من حالة الاستجابة
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        
+        if (result.result === "success") {
           message.textContent = "✅ Your order has been sent successfully!";
           message.className = "message success";
           form.reset();
           form.product.value = product.replace(/-/g, " ").toUpperCase();
         } else {
-          throw new Error("Failed");
+          throw new Error(result.message || "Failed to process order");
         }
-      })
-      .catch(error => {
-        message.textContent = "❌ Failed to send order. Please try again.";
+      } catch (error) {
+        console.error("Error:", error);
+        message.textContent = "❌ Failed to send order. Please try again later.";
         message.className = "message error";
-        console.error(error);
-      });
+        
+        // خيار بديل إذا فشل الطلب
+        if (error.message.includes("Failed to fetch")) {
+          setTimeout(() => {
+            message.textContent += " You can also contact us directly.";
+          }, 2000);
+        }
+      } finally {
+        submitBtn.disabled = false;
+      }
     });
   </script>
 </body>
