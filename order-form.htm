@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Order Now | VINDEX</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap">
+   <link rel="icon" href="img/vindex_logo_transparent.png" type="image/png" />
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: 'Cinzel', serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .form-container {
+      background-color: #111;
+      border: 1px solid gold;
+      border-radius: 15px;
+      padding: 30px;
+      max-width: 450px;
+      width: 100%;
+      box-shadow: 0 0 15px gold;
+    }
+
+    h2 {
+      text-align: center;
+      color: gold;
+      margin-bottom: 20px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      background-color: #222;
+      color: #fff;
+      font-size: 16px;
+    }
+
+    input[readonly] {
+      background-color: #333;
+      color: #ccc;
+    }
+
+    button {
+      background-color: gold;
+      color: #000;
+      padding: 12px;
+      font-weight: bold;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #d4af37;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 16px;
+    }
+
+    .message.success {
+      color: #4caf50;
+    }
+
+    .message.error {
+      color: #f44336;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Order Your Perfume</h2>
+    <form id="orderForm">
+      <input type="text" id="product" name="product" readonly />
+      <input type="text" name="name" placeholder="Your Name" required />
+      <input type="tel" name="phone" placeholder="Phone Number" required />
+      <textarea name="address" placeholder="Delivery Address" required></textarea>
+      <button type="submit">Send Order</button>
+      <div class="message" id="formMessage"></div>
+    </form>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const product = urlParams.get('product') || "VINDEX Perfume";
+    document.getElementById("product").value = product.replace(/-/g, " ").toUpperCase();
+
+    const form = document.getElementById("orderForm");
+    const message = document.getElementById("formMessage");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const data = {
+        product: form.product.value,
+        name: form.name.value,
+        phone: form.phone.value,
+        address: form.address.value
+      };
+
+      fetch("https://script.google.com/macros/s/AKfycbwyvWgUjzFs4FUiuTMKxIYkENFi_9YTqfH4QreRj8_mNTAGmud45_VYunbrzpkEs5bVww/exec", {
+        method: "POST",
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(response => {
+        if (response.result === "success") {
+          message.textContent = "✅ Your order has been sent successfully!";
+          message.className = "message success";
+          form.reset();
+          form.product.value = product.replace(/-/g, " ").toUpperCase();
+        } else {
+          throw new Error("Failed");
+        }
+      })
+      .catch(error => {
+        message.textContent = "❌ Failed to send order. Please try again.";
+        message.className = "message error";
+        console.error(error);
+      });
+    });
+  </script>
+</body>
+</html>
