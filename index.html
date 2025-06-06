@@ -2,6 +2,10 @@
 <html lang="en" dir="ltr">
 <head>
   <link rel="icon" href="img/vindex_logo_transparent.png" type="image/png" />
+  <link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+/>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>VINDEX | Luxury Perfumes</title>
@@ -39,14 +43,63 @@
   </section>
 
   <section id="perfumes" class="interactive-section">
-    <h2>Perfume Collection</h2>
-    <div class="perfume-gallery">
-      <img src="img/fo women.jpg" alt="for women" />
-      <img src="img/for men.JPG" alt="for men" />
-      <img src="img/both.png" alt="both" />
-      <img src="img/Tester.jpg" alt="Tester" />
-      <img src="img/oil.png" alt="oil" />
+  <h2>Perfume Collection</h2>
+  <div class="swiper mySwiper">
+    <div class="swiper-wrapper">
+      <!-- Perfume Slide 1 -->
+      <div class="swiper-slide">
+        <img src="img/fo women.jpg" alt="For Women" />
+        <h3>VINDEX - For Women</h3>
+        <a href="order-form.html?product=for-women">
+          <button class="order-btn">Order Now</button>
+        </a>
+      </div>
+
+      <!-- Perfume Slide 2 -->
+      <div class="swiper-slide">
+        <img src="img/for men.JPG" alt="For Men" />
+        <h3>VINDEX - For Men</h3>
+        <a href="order-form.html?product=for-men">
+          <button class="order-btn">Order Now</button>
+        </a>
+      </div>
+
+      <!-- Perfume Slide 3 -->
+      <div class="swiper-slide">
+        <img src="img/both.png" alt="Unisex" />
+        <h3>VINDEX - Unisex</h3>
+        <a href="order-form.html?product=unisex">
+          <button class="order-btn">Order Now</button>
+        </a>
+      </div>
+
+      <!-- Perfume Slide 4 -->
+      <div class="swiper-slide">
+        <img src="img/Tester.jpg" alt="Tester" />
+        <h3>VINDEX - Tester</h3>
+        <a href="order-form.html?product=tester">
+          <button class="order-btn">Order Now</button>
+        </a>
+      </div>
+
+      <!-- Perfume Slide 5 -->
+      <div class="swiper-slide">
+        <img src="img/oil.png" alt="Oil" />
+        <h3>VINDEX - Oil</h3>
+        <a href="order-form.html?product=oil">
+          <button class="order-btn">Order Now</button>
+        </a>
+      </div>
     </div>
+
+    <!-- Navigation Buttons -->
+    <!-- <div class="swiper-button-next"></div> -->
+    <div class="swiper-button-prev"></div>
+    <!-- <div class="swiper-pagination"></div> -->
+  </div>
+</section>
+
+
   </section>
 
   <section id="reviews" class="interactive-section">
@@ -62,7 +115,7 @@
     <h2>Order Now</h2>
     <p>Contact us directly on WhatsApp to order your favorite perfume or for inquiries:</p>
     <a href="https://wa.me/+201055741189" target="_blank" rel="noopener noreferrer">
-      <button class="cta-button">Order Now </button>
+      <button class="cta-button">Contact us on WhatsApp</button>
     </a>
     <p>
       Follow us on:
@@ -71,6 +124,12 @@
     </p>
   </section>
 
-  <script src="js/main.js"></script>
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<!-- ملف الجافاسكريبت بتاعك -->
+<script src="js/main.js"></script>
+
+
 </body>
 </html>
