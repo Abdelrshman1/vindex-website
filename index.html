@@ -1,107 +1,121 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-  <link rel="icon" href="img/vindex_logo_transparent.png" type="image/png" />
-  <link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
-/>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>VINDEX | Luxury Perfumes</title>
+  <link rel="icon" href="img/vindex_logo_transparent.png" type="image/png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
   <nav>
-      <button id="menu-btn" aria-label="Toggle menu">
-      &#9776; 
-    </button>
     <div class="logo"><img src="img/vindex_logo_transparent.png" alt="logo" class="logo-bar"></div>
-   <ul id="menu">
-  <li><a href="#about">About Us</a></li>
-  <li><a href="#perfumes">Perfume Collection</a></li>
-  <li><a href="#reviews">Customer Reviews</a></li>
-  <li><a href="#contact" style="margin-right: 60px;">Contact Us</a></li>
-</ul>
+    <button id="menu-btn" aria-label="Toggle menu">&#9776;</button>
+    <ul id="menu">
+      <li><a href="#about">About Us</a></li>
+      <li><a href="#perfumes">Perfume Collection</a></li>
+      <li><a href="#design-perfume">Design Your Perfume</a></li>
+      <li><a href="#reviews">Customer Reviews</a></li>
+      <li><a href="#contact">Contact Us</a></li>
+    </ul>
   </nav>
 
   <header>
     <img src="img/vindex_logo_transparent.png" alt="VINDEX Logo" class="logo-image" />
-  
     <p>Perfumes that Reflect Power, Elegance, and Luxury</p>
   </header>
 
-  <section id="about" class="interactive-section">
-    <h2>About Us</h2>
-    <p>
-      VINDEX was founded to be a pioneer in the world of luxury perfumes in Egypt and the Arab world.
-      We pay special attention to every detail in perfume crafting, relying on the finest natural essential oils
-      to provide a unique fragrance experience distinguished by longevity and strong sillage.
-      With VINDEX, you don’t just own a perfume, you carry a symbol of power, elegance, and distinction.
-    </p>
-  </section>
+ 
 
-  <section id="perfumes" class="interactive-section">
-  <h2>Perfume Collection</h2>
-  <div class="swiper mySwiper">
-    <div class="swiper-wrapper">
-      <!-- Perfume Slide 1 -->
-      <div class="swiper-slide">
-        <img src="img/fo women.jpg" alt="For Women" />
-        <h3>VINDEX - For Women</h3>
-        <a href="order-form.html?product=for-women">
-          <button class="order-btn">Order Now</button>
-        </a>
-      </div>
+  <section class="perfume-customizer" id="design-perfume">
+  <h2 class="section-title">Design Your Perfume</h2>
 
-      <!-- Perfume Slide 2 -->
-      <div class="swiper-slide">
-        <img src="img/for men.JPG" alt="For Men" />
-        <h3>VINDEX - For Men</h3>
-        <a href="order-form.html?product=for-men">
-          <button class="order-btn">Order Now</button>
-        </a>
-      </div>
-
-      <!-- Perfume Slide 3 -->
-      <div class="swiper-slide">
-        <img src="img/both.png" alt="Unisex" />
-        <h3>VINDEX - Unisex</h3>
-        <a href="order-form.html?product=unisex">
-          <button class="order-btn">Order Now</button>
-        </a>
-      </div>
-
-      <!-- Perfume Slide 4 -->
-      <div class="swiper-slide">
-        <img src="img/Tester.jpg" alt="Tester" />
-        <h3>VINDEX - Tester</h3>
-        <a href="order-form.html?product=tester">
-          <button class="order-btn">Order Now</button>
-        </a>
-      </div>
-
-      <!-- Perfume Slide 5 -->
-      <div class="swiper-slide">
-        <img src="img/oil.png" alt="Oil" />
-        <h3>VINDEX - Oil</h3>
-        <a href="order-form.html?product=oil">
-          <button class="order-btn">Order Now</button>
-        </a>
-      </div>
-    </div>
-
-    <!-- Navigation Buttons -->
-    <!-- <div class="swiper-button-next"></div> -->
-    <div class="swiper-button-prev"></div>
-    <!-- <div class="swiper-pagination"></div> -->
+  <!-- Step 1: Choose Size -->
+  <div class="custom-step">
+    <h3>1. Choose Bottle Size</h3>
+    <select id="perfume-size">
+      <option value="" disabled selected>Select size</option>
+      <option value="30ml" data-price="0">30ml</option>
+      <option value="50ml" data-price="20">50ml (+20 EGP)</option>
+      <option value="100ml" data-price="40">100ml (+40 EGP)</option>
+    </select>
   </div>
+
+  <!-- Step 2: Choose Bottle Type -->
+  <div class="custom-step">
+    <h3>2. Choose Bottle Type</h3>
+    <select id="bottle-type">
+      <option value="" disabled selected>Select bottle type</option>
+      <option value="Plastic" data-price="50">Plastic (+50 EGP)</option>
+      <option value="Glass" data-price="80">Glass (+80 EGP)</option>
+      <option value="Luxury" data-price="120">Luxury (+120 EGP)</option>
+    </select>
+  </div>
+
+  <!-- Step 3: Choose Alcohol Type -->
+  <div class="custom-step">
+    <h3>3. Choose Alcohol Type</h3>
+    <select id="alcohol-type">
+      <option value="" disabled selected>Select alcohol type</option>
+      <option value="Normal" data-price="0">Normal</option>
+      <option value="Medical" data-price="20">Medical (+20 EGP)</option>
+      <option value="Original Match" data-price="30">Original Match (+30 EGP)</option>
+    </select>
+  </div>
+
+  <!-- Step 4: Choose Scent -->
+  <div class="custom-step">
+    <h3>4. Choose Scent</h3>
+    <select id="gender-select">
+      <option value="" disabled selected>Select Gender</option>
+      <option value="men">Men</option>
+      <option value="women">Women</option>
+    </select>
+
+    <select id="scent-select">
+      <option value="" disabled selected>Select a scent</option>
+
+    </select>
+  </div>
+
+  <!-- Step 5: Choose Packaging -->
+  <div class="custom-step">
+    <h3>5. Choose Packaging</h3>
+    <select id="packaging-select">
+      <option value="" disabled selected>Select packaging</option>
+      <option value="Normal" data-price="0">Normal</option>
+      <option value="Gift" data-price="30">Gift Wrap (+30 EGP)</option>
+    </select>
+  </div>
+
+  <!-- Order Summary -->
+  <div class="order-summary">
+    <h3>Your Order Summary</h3>
+    <div class="summary-details">
+      <p id="summary-size">Size: ---</p>
+      <p id="summary-bottle">Bottle: ---</p>
+      <p id="summary-alcohol">Alcohol: ---</p>
+      <p id="summary-scent">Scent: ---</p>
+      <p id="summary-packaging">Packaging: ---</p>
+    </div>
+    <div class="total-price">
+      <h4 id="total-price">Total Price: 0 EGP</h4>
+      <button id="checkout-button">Complete Order</button>
+    </div>
+  </div>
+
+  <!-- Customer Info Form -->
+ <form id="customer-form" style="display: none; margin-top: 20px;">
+    <h3>Enter Your Details</h3>
+    <input type="text" id="customer-name" placeholder="Full Name" required />
+    <input type="text" id="customer-phone" placeholder="Phone Number" required />
+    <textarea id="customer-address" placeholder="Delivery Address" required></textarea>
+    <button type="button" id="submit-order">Submit Order</button>
+
+</form>
 </section>
-
-
-  </section>
-
   <section id="reviews" class="interactive-section">
     <h2>Customer Reviews</h2>
     <div class="reviews-container">
@@ -120,16 +134,21 @@
     <p>
       Follow us on:
       <a href="https://www.facebook.com/Abody710" target="_blank" rel="noopener noreferrer">Facebook</a> |
-      <a href="https://www.instagram.com/karim.abdelrahman2023?igsh=MWJyOGQxbGo3b2NtaA==" target="_blank" rel="noopener noreferrer">Instagram</a>
+      <a href="https://www.instagram.com/karim.abdelrahman2023" target="_blank" rel="noopener noreferrer">Instagram</a>
+    </p>
+  </section>
+   <section id="about" class="interactive-section">
+    <h2>About Us</h2>
+    <p>
+      VINDEX was founded to be a pioneer in the world of luxury perfumes in Egypt and the Arab world.
+      We pay special attention to every detail in perfume crafting, relying on the finest natural essential oils
+      to provide a unique fragrance experience distinguished by longevity and strong sillage.
+      With VINDEX, you don’t just own a perfume, you carry a symbol of power, elegance, and distinction.
     </p>
   </section>
 
-<!-- Swiper JS -->
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
-<!-- ملف الجافاسكريبت بتاعك -->
-<script src="js/main.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="js/main.js"></script>
 
 </body>
 </html>
