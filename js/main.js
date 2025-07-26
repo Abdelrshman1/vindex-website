@@ -1,142 +1,139 @@
-// perfume options for men and women
-const scents = {
-  men: ["Sauvage", "Bleu de Chanel", "Creed Aventus", "Dior Homme"],
-  women: ["J'adore", "La Vie Est Belle", "Chanel No.5", "Good Girl"]
-};
+// main.js
 
-// elements
-const sizeSelect = document.getElementById("perfume-size");
-const bottleSelect = document.getElementById("bottle-type");
-const alcoholSelect = document.getElementById("alcohol-type");
-const genderSelect = document.getElementById("gender-select");
-const scentSelect = document.getElementById("scent-select");
-const packagingSelect = document.getElementById("packaging-select");
+document.addEventListener("DOMContentLoaded", () => {
+  const sizeSelect = document.getElementById("perfume-size");
+  const bottleSelect = document.getElementById("bottle-type");
+  const alcoholSelect = document.getElementById("alcohol-type");
+  //const perfumemaleselect = document.getElementById("male-perfumes");
+  // const perfumefemaleselect = document.getElementById("female-perfumes");
+  const packagingSelect = document.getElementById("packaging-select");
+  const customPerfumePrice = document.getElementById("custom-perfume-price");
 
-const summarySize = document.getElementById("summary-size");
-const summaryBottle = document.getElementById("summary-bottle");
-const summaryAlcohol = document.getElementById("summary-alcohol");
-const summaryScent = document.getElementById("summary-scent");
-const summaryPackaging = document.getElementById("summary-packaging");
+  const summarySize = document.getElementById("summary-size");
+  const summaryBottle = document.getElementById("summary-bottle");
+  const summaryAlcohol = document.getElementById("summary-alcohol");
+  const summaryPackaging = document.getElementById("summary-packaging");
+  //const summaryPerfume = document.getElementById("summary-perfume");
 
-const totalPriceElement = document.getElementById("total-price");
-const checkoutBtn = document.getElementById("checkout-button");
-const customerForm = document.getElementById("customer-form");
-const submitOrder = document.getElementById("submit-order");
+  const totalPriceElement = document.getElementById("total-price");
+  const checkoutBtn = document.getElementById("checkout-button");
+  const customerForm = document.getElementById("customer-form");
+  const submitOrder = document.getElementById("submit-order");
 
+  // function getSelectedPerfumeName() {
+  //   const male = perfumemaleselect.value;
+  //   const female = perfumefemaleselect.value;
+  //   return male || female || "No perfume selected";
+  // }
 
-function updateScentOptions() {
-  const selectedGender = genderSelect.value;
-  scentSelect.innerHTML = '<option value="" disabled selected>Select a scent</option>';
-  if (selectedGender && scents[selectedGender]) {
-    scents[selectedGender].forEach((scent) => {
-      const option = document.createElement("option");
-      option.value = scent;
-      option.textContent = scent;
-      scentSelect.appendChild(option);
-    });
-  }
-}
+  function updateSummary() {
+    const sizePrice = parseInt(sizeSelect?.selectedOptions[0]?.dataset.price || 0);
+    const bottlePrice = parseInt(bottleSelect?.selectedOptions[0]?.dataset.price || 0);
+    const alcoholPrice = parseInt(alcoholSelect?.selectedOptions[0]?.dataset.price || 0);
+    const packagingPrice = parseInt(packagingSelect?.selectedOptions[0]?.dataset.price || 0);
+    const customPerfume = parseInt(customPerfumePrice?.value || 0);
 
-function updateSummary() {
-  summarySize.textContent = "Size: " + (sizeSelect.value || "---");
-  summaryBottle.textContent = "Bottle: " + (bottleSelect.value || "---");
-  summaryAlcohol.textContent = "Alcohol: " + (alcoholSelect.value || "---");
-  summaryScent.textContent = "Scent: " + (scentSelect.value || "---");
-  summaryPackaging.textContent = "Packaging: " + (packagingSelect.value || "---");
+    const total = sizePrice + bottlePrice + alcoholPrice + packagingPrice + customPerfume;
 
-  const sizePrice = parseInt(sizeSelect.selectedOptions[0]?.dataset.price || 0);
-  const bottlePrice = parseInt(bottleSelect.selectedOptions[0]?.dataset.price || 0);
-  const alcoholPrice = parseInt(alcoholSelect.selectedOptions[0]?.dataset.price || 0);
-  const packagingPrice = parseInt(packagingSelect.selectedOptions[0]?.dataset.price || 0);
-
-  const total = sizePrice + bottlePrice + alcoholPrice + packagingPrice;
-  totalPriceElement.textContent = `Total Price: ${total} EGP`;
-}
-
-
-
-// event listeners
-sizeSelect.addEventListener("change", updateSummary);
-bottleSelect.addEventListener("change", updateSummary);
-alcoholSelect.addEventListener("change", updateSummary);
-packagingSelect.addEventListener("change", updateSummary);
-scentSelect.addEventListener("change", updateSummary);
-genderSelect.addEventListener("change", () => {
-  updateScentOptions();
-  updateSummary();
-});
-
-checkoutBtn.addEventListener("click", () => {
-  customerForm.style.display = "block";
-  checkoutBtn.style.display = "none";
-});
-submitOrder.addEventListener("click", async () => {
-  // Get form values
-  const name = document.getElementById("customer-name").value;
-  const phone = document.getElementById("customer-phone").value;
-  const address = document.getElementById("customer-address").value;
-  const size = sizeSelect.value;
-  const bottle = bottleSelect.value;
-  const alcohol = alcoholSelect.value;
-  const gender = genderSelect.value;
-  const scent = scentSelect.value;
-  const packaging = packagingSelect.value;
-    console.log("قيمة العطر المختارة:", scent ,gender);
-
-
-  // Calculate prices
-  const sizePrice = parseInt(sizeSelect.selectedOptions[0]?.dataset.price || 0);
-  const bottlePrice = parseInt(bottleSelect.selectedOptions[0]?.dataset.price || 0);
-  const alcoholPrice = parseInt(alcoholSelect.selectedOptions[0]?.dataset.price || 0);
-  const packagingPrice = parseInt(packagingSelect.selectedOptions[0]?.dataset.price || 0);
-  const total = sizePrice + bottlePrice + alcoholPrice + packagingPrice;
-
-  // Validate required fields
-  if (!name || !phone || !address) {
-    alert("يرجى ملء كل البيانات");
-    return;
+    summarySize.textContent = "Size: " + (sizeSelect.value || "---");
+    summaryBottle.textContent = "Bottle: " + (bottleSelect.value || "---");
+    summaryAlcohol.textContent = "Alcohol: " + (alcoholSelect.value || "---");
+    summaryPackaging.textContent = "Packaging: " + (packagingSelect.value || "---");
+    // summaryPerfume.textContent = "Perfume: " + getSelectedPerfumeName();
+    totalPriceElement.textContent = `Total Price: ${total} EGP`;
   }
 
-  // Prepare order data
-  const orderData = {
-    name,
-    phone,
-    address,
-    size,
-    bottle,
-    alcohol,
-    gender, 
-    scent,
-    packaging,
-    total
-  };
+  [sizeSelect, bottleSelect, alcoholSelect, packagingSelect, /*perfumemaleselect, perfumefemaleselect8*/, customPerfumePrice]
+    .forEach(el => el?.addEventListener("change", updateSummary));
 
-  // Google Apps Script URL
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbx7TqC9H4DTscjnfP461SDu0jseAQ8If0yAFGzu90ffBwky4WmPKii3OmeK7D5jEl9FXw/exec';
+  checkoutBtn?.addEventListener("click", () => {
+    customerForm.style.display = "block";
+    checkoutBtn.style.display = "none";
+  });
 
-  try {
-    // Send data to Google Sheets
-    const response = await fetch(scriptURL, {
-      method: 'POST',
-      body: JSON.stringify(orderData),
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      // Important for Google Apps Script
-      redirect: 'follow',
-      mode: 'no-cors' // Only if you've properly configured CORS in your Apps Script
-    });
+  submitOrder?.addEventListener("click", async () => {
+    const name = document.getElementById("customer-name")?.value;
+    const phone = document.getElementById("customer-phone")?.value;
+    const address = document.getElementById("customer-address")?.value;
 
-    // Check if the request was successful
-    if (response.ok || response.status === 0) { // status 0 for no-cors mode
-      alert("✅ تم إرسال الطلب بنجاح!");
-      // Optional: Reset form after successful submission
-     document.getElementById("customer-form").reset();
-    } else {
-      throw new Error('Network response was not ok');
+    if (!name || !phone || !address) {
+      alert("يرجى ملء كل البيانات");
+      return;
     }
-  } catch (error) {
-    alert("❌ حصل خطأ، حاول تاني.");
-    console.error("Error:", error);
-  }
+
+    // const perfume = getSelectedPerfumeName();
+    const size = sizeSelect.value;
+    const bottle = bottleSelect.value;
+    const alcohol = alcoholSelect.value;
+    const packaging = packagingSelect.value;
+    const perfumeBasePrice = parseInt(customPerfumePrice?.value || 0);
+
+    const sizePrice = parseInt(sizeSelect?.selectedOptions[0]?.dataset.price || 0);
+    const bottlePrice = parseInt(bottleSelect?.selectedOptions[0]?.dataset.price || 0);
+    const alcoholPrice = parseInt(alcoholSelect?.selectedOptions[0]?.dataset.price || 0);
+    const packagingPrice = parseInt(packagingSelect?.selectedOptions[0]?.dataset.price || 0);
+
+    const total = sizePrice + bottlePrice + alcoholPrice + packagingPrice + perfumeBasePrice;
+
+    document.getElementById("order-summary").innerHTML = `
+      <h2>Order Summary</h2>
+      <p><strong>Name:</strong> ${name}</p>
+      <p><strong>Phone:</strong> ${phone}</p>
+      <p><strong>Address:</strong> ${address}</p>
+      <p><strong>Size:</strong> ${size}</p>
+      <p><strong>Bottle Type:</strong> ${bottle}</p>
+      <p><strong>perfume:</strong> ${alcohol}</p>
+      <p><strong>perfume:</strong> ${packaging}</p>
+      <p><strong>Base Perfume Price:</strong> ${perfumeBasePrice} EGP</p>
+      <h3>Total: ${total} EGP</h3>
+    `;
+
+    const message = encodeURIComponent(`🧾 Order Summary\n--------------------\n👤 Name: ${name}\n📞 Phone: ${phone}\n📍 Address: ${address}\n📦 Size: ${size}\n🍾 Bottle: ${bottle}\n💧 Perfume: ${alcohol}\n🎁 Perfume: ${packaging}\n💰 Total: ${total} EGP`);
+    const whatsappURL = `https://wa.me/20${phone}?text=${message}`;
+    window.open(whatsappURL, "_blank");
+
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbx7TqC9H4DTscjnfP461SDu0jseAQ8If0yAFGzu90ffBwky4WmPKii3OmeK7D5jEl9FXw/exec';
+
+console.log({ 
+  name,
+  phone,
+  address,
+  size,
+  bottle,
+  alcohol,
+  // perfume,
+  packaging,
+  total
+});
+
+    try {
+      await fetch(scriptURL, {
+        method: 'POST',
+        body: JSON.stringify({
+  name,
+  phone,
+  address,
+  size,
+  bottle,
+  alcohol,
+  packaging,
+  // perfume, // ← ده التعديل الصح
+  total
+}),
+
+
+        headers: { 'Content-Type': 'application/json' },
+        redirect: 'follow',
+        mode: 'no-cors'
+      });
+
+      alert("✅ تم إرسال الطلب بنجاح!");
+      document.getElementById("customer-form").reset();
+    } catch (error) {
+      alert("❌ حصل خطأ، حاول تاني.");
+      console.error("Error:", error);
+    }
+  });
+
+  updateSummary();
 });
