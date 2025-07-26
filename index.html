@@ -27,14 +27,12 @@
     <p>Perfumes that Reflect Power, Elegance, and Luxury</p>
   </header>
 
- 
-
   <section class="perfume-customizer" id="design-perfume">
   <h2 class="section-title">Design Your Perfume</h2>
 
   <!-- Step 1: Choose Size -->
   <div class="custom-step">
-    <h3>1. Choose Bottle Size</h3>
+    <h3> Choose Bottle Size</h3>
     <select id="perfume-size">
       <option value="" disabled selected>Select size</option>
       <option value="30ml" data-price="0">30ml</option>
@@ -45,7 +43,7 @@
 
   <!-- Step 2: Choose Bottle Type -->
   <div class="custom-step">
-    <h3>2. Choose Bottle Type</h3>
+    <h3> Choose Bottle Type</h3>
     <select id="bottle-type">
       <option value="" disabled selected>Select bottle type</option>
       <option value="Plastic" data-price="50">Plastic (+50 EGP)</option>
@@ -56,66 +54,70 @@
 
   <!-- Step 3: Choose Alcohol Type -->
   <div class="custom-step">
-    <h3>3. Choose Alcohol Type</h3>
+    <h3> Men Perfume </h3>
     <select id="alcohol-type">
-      <option value="" disabled selected>Select alcohol type</option>
-      <option value="Normal" data-price="0">Normal</option>
-      <option value="Medical" data-price="20">Medical (+20 EGP)</option>
-      <option value="Original Match" data-price="30">Original Match (+30 EGP)</option>
+      <option value="" disabled selected>اختر برفيوم رجالي</option>
+      <option value="Blue Ocean" data-price="400">Blue Ocean (+400 EGP)</option>
+      <option value="Oud Touch" data-price="450">Oud Touch (+450 EGP)</option>
+      <option value="Leather Amber" data-price="420">Leather Amber (+420 EGP)</option>
     </select>
   </div>
 
   <!-- Step 4: Choose Scent -->
-  <div class="custom-step">
-    <h3>4. Choose Scent</h3>
-    <select id="gender-select">
-      <option value="" disabled selected>Select Gender</option>
-      <option value="men">Men</option>
-      <option value="women">Women</option>
-    </select>
-
-    <select id="scent-select">
-      <option value="" disabled selected>Select a scent</option>
-
+  <!-- <div class="custom-step">
+    <h3>Men</h3>
+    <select id="male-perfumes">
+      <option value="" disabled selected>اختر برفيوم رجالي</option>
+      <option value="Blue Ocean" data-price="400">Blue Ocean (+400 EGP)</option>
+      <option value="Oud Touch" data-price="450">Oud Touch (+450 EGP)</option>
+      <option value="Leather Amber" data-price="420">Leather Amber (+420 EGP)</option>
     </select>
   </div>
 
+  <div class="custom-step">
+    <h3>Women</h3>
+    <select id="female-perfumes">
+      <option value="" disabled selected>اختر برفيوم نسائي</option>
+      <option value="Vanilla Musk" data-price="390">Vanilla Musk (+390 EGP)</option>
+      <option value="Sweet Rose" data-price="410">Sweet Rose (+410 EGP)</option>
+      <option value="Fresh Citrus" data-price="380">Fresh Citrus (+380 EGP)</option>
+    </select>
+  </div> -->
+
   <!-- Step 5: Choose Packaging -->
   <div class="custom-step">
-    <h3>5. Choose Packaging</h3>
+    <h3>Women Perfumes</h3>
     <select id="packaging-select">
-      <option value="" disabled selected>Select packaging</option>
-      <option value="Normal" data-price="0">Normal</option>
-      <option value="Gift" data-price="30">Gift Wrap (+30 EGP)</option>
+      <option value="" disabled selected>اختر برفيوم نسائي</option>
+      <option value="Vanilla Musk" data-price="390">Vanilla Musk (+390 EGP)</option>
+      <option value="Sweet Rose" data-price="410">Sweet Rose (+410 EGP)</option>
+      <option value="Fresh Citrus" data-price="380">Fresh Citrus (+380 EGP)</option>
     </select>
   </div>
 
   <!-- Order Summary -->
-  <div class="order-summary">
-    <h3>Your Order Summary</h3>
-    <div class="summary-details">
-      <p id="summary-size">Size: ---</p>
-      <p id="summary-bottle">Bottle: ---</p>
-      <p id="summary-alcohol">Alcohol: ---</p>
-      <p id="summary-scent">Scent: ---</p>
-      <p id="summary-packaging">Packaging: ---</p>
-    </div>
-    <div class="total-price">
-      <h4 id="total-price">Total Price: 0 EGP</h4>
-      <button id="checkout-button">Complete Order</button>
-    </div>
+  <div id="order-summary" class="section custom-step">
+    <h3> Order summary </h3>
+    <p id="summary-size">Size: ---</p>
+    <p id="summary-bottle">Bottle: ---</p>
+    <p id="summary-alcohol">perfume: ---</p>
+    <p id="summary-packaging">perfume: ---</p>
+    <!-- <p id="summary-perfume">Perfume: ---</p> -->
+    <p id="total-price">Total Price: 0 EGP</p>
+    <button id="checkout-button">Next</button>
   </div>
 
   <!-- Customer Info Form -->
- <form id="customer-form" style="display: none; margin-top: 20px;">
+  <form id="customer-form" style="display: none; margin-top: 20px;">
     <h3>Enter Your Details</h3>
     <input type="text" id="customer-name" placeholder="Full Name" required />
     <input type="text" id="customer-phone" placeholder="Phone Number" required />
     <textarea id="customer-address" placeholder="Delivery Address" required></textarea>
-    <button type="button" id="submit-order">Submit Order</button>
-
-</form>
+    <button type="button" id="submit-order">Send Order</button>
+  </form>
 </section>
+
+
   <section id="reviews" class="interactive-section">
     <h2>Customer Reviews</h2>
     <div class="reviews-container">
@@ -137,7 +139,8 @@
       <a href="https://www.instagram.com/karim.abdelrahman2023" target="_blank" rel="noopener noreferrer">Instagram</a>
     </p>
   </section>
-   <section id="about" class="interactive-section">
+
+  <section id="about" class="interactive-section">
     <h2>About Us</h2>
     <p>
       VINDEX was founded to be a pioneer in the world of luxury perfumes in Egypt and the Arab world.
@@ -146,9 +149,11 @@
       With VINDEX, you don’t just own a perfume, you carry a symbol of power, elegance, and distinction.
     </p>
   </section>
+  <!-- Order Confirmation Message -->
+
+
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="js/main.js"></script>
-
 </body>
 </html>
