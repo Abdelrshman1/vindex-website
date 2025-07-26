@@ -191,6 +191,7 @@ section p {
   background-color: #333;
 }
 
+
 .order-summary {
   background: #1b1b1b;
   padding: 20px;
@@ -290,7 +291,7 @@ select::after {
 #total-price {
   font-size: 20px;
   font-weight: bold;
-  color: ذ #DFCA75;
+  color: #DFCA75;
 }
 
 #checkout-button {
