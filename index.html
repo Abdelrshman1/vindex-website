@@ -3,241 +3,612 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>VINDEX | Luxury Perfumes</title>
+  <title>VINDEX | Luxury Perfumes - Crafted for Elegance</title>
+  <meta name="description" content="Experience luxury perfumes crafted with the finest essential oils. VINDEX - Where Power Meets Elegance.">
+  <meta name="keywords" content="luxury perfumes, VINDEX, Egyptian perfumes, custom fragrance, designer perfumes">
+  
+  <!-- Favicon -->
   <link rel="icon" href="img/vindex_logo_transparent.png" type="image/png" />
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Swiper -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  
+  <!-- AOS Animation -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
+  
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-  <nav>
-    <div class="logo"><img src="img/vindex_logo_transparent.png" alt="logo" class="logo-bar"></div>
-    <button id="menu-btn" aria-label="Toggle menu">&#9776;</button>
-    <ul id="menu">
-      <li><a href="#about">About Us</a></li>
-      <li><a href="#perfumes">Perfume Collection</a></li>
-      <li><a href="#design-perfume">Design Your Perfume</a></li>
-      <li><a href="#reviews">Customer Reviews</a></li>
-      <li><a href="#contact">Contact Us</a></li>
-    </ul>
+  <!-- Preloader -->
+  <div class="preloader">
+    <div class="loader">
+      <img src="img/vindex_logo_transparent.png" alt="Loading..." class="loader-logo">
+      <div class="loader-bar"></div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <img src="img/vindex_logo_transparent.png" alt="VINDEX" class="logo-img">
+      </div>
+      <ul class="nav-menu">
+        <li><a href="#home" class="nav-link">Home</a></li>
+        <li><a href="#about" class="nav-link">About</a></li>
+        <li><a href="#collection" class="nav-link">Collection</a></li>
+        <li><a href="#design-perfume" class="nav-link">Design Yours</a></li>
+        <li><a href="#reviews" class="nav-link">Reviews</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
+      </ul>
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
   </nav>
 
-  <header>
-    <img src="img/vindex_logo_transparent.png" alt="VINDEX Logo" class="logo-image" />
-    <p>Perfumes that Reflect Power, Elegance, and Luxury</p>
+  <!-- Hero Section -->
+  <header id="home" class="hero">
+    <div class="hero-bg">
+      <div class="hero-particles"></div>
+    </div>
+    <div class="hero-content">
+      <img src="img/vindex_logo_transparent.png" alt="VINDEX" class="hero-logo" data-aos="fade-down">
+      <h1 class="hero-title" data-aos="fade-up" data-aos-delay="200">
+        <span class="gold-text">VINDEX</span>
+      </h1>
+      <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="400">
+        Perfumes that Reflect Power, Elegance, and Luxury
+      </p>
+      <div class="hero-cta" data-aos="fade-up" data-aos-delay="600">
+        <a href="#design-perfume" class="btn btn-primary">Design Your Perfume</a>
+        <a href="#collection" class="btn btn-outline">Explore Collection</a>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <span></span>
+    </div>
   </header>
 
-  <section class="perfume-customizer" id="design-perfume">
-  <h2 class="section-title">Design Your Perfume</h2>
-
-  <!-- Step 1: Choose Size -->
-  <div class="custom-step">
-    <h3> Choose Bottle Size</h3>
-    <select id="perfume-size">
-      <option value="" disabled selected>Select size</option>
-      <option value="30ml" data-price="-100">30ml</option>
-      <option value="50ml" data-price="0">50ml </option>
-      <option value="100ml" data-price="150">100ml </option>
-    </select>
-  </div>
-
-  <!-- Step 2: Choose Bottle Type -->
-  <div class="custom-step">
-    <h3> Choose Bottle Type</h3>
-    <select id="bottle-type">
-      <option value="" disabled selected>Select bottle type</option>
-      <option value="Plastic" data-price="20">Plastic </option>
-      <option value="Glass" data-price="40">Glass </option>
-      <option value="Luxury" data-price="60">Luxury </option>
-    </select>
-  </div>
-
-  <!-- Step 3: Choose Alcohol Type -->
-  <div class="custom-step">
-    <h3> Men Perfume </h3>
-    <select id="alcohol-type">
-                  <option value="" disabled selected> Choose your perfume</option>
-
-      <!-- 🔹 العطور الرجالي العادية (200 EGP) -->
-<option value="Sauvage Dior EDT" data-price="200">Sauvage Dior EDT (+200 EGP)</option>
-<option value="One Million Paco Rabanne" data-price="200">One Million (+200 EGP)</option>
-<option value="Versace Eros" data-price="200">Versace Eros (+200 EGP)</option>
-<option value="Bleu de Chanel" data-price="200">Bleu de Chanel (+200 EGP)</option>
-<option value="YSL Y" data-price="200">YSL Y (+200 EGP)</option>
-<option value="Invictus" data-price="200">Invictus (+200 EGP)</option>
-<option value="Acqua Di Gio" data-price="200">Acqua Di Gio (+200 EGP)</option>
-<option value="Stronger With You" data-price="200">Stronger With You (+200 EGP)</option>
-<option value="Dunhill Desire Red" data-price="200">Dunhill Desire Red (+200 EGP)</option>
-<option value="Mont Blanc Legend" data-price="200">Mont Blanc Legend (+200 EGP)</option>
-<option value="Club De Nuit Intense" data-price="200">Club De Nuit Intense (+200 EGP)</option>
-<option value="Hugo Boss Bottled" data-price="200">Hugo Boss Bottled (+200 EGP)</option>
-<option value="Lacoste Blanc" data-price="200">Lacoste Blanc (+200 EGP)</option>
-<option value="John Varvatos" data-price="200">John Varvatos (+200 EGP)</option>
-<option value="CK One Shock" data-price="200">CK One Shock (+200 EGP)</option>
-<option value="Abercrombie Fierce" data-price="200">Abercrombie Fierce (+200 EGP)</option>
-<option value="Givenchy Gentlemen" data-price="200">Givenchy Gentlemen (+200 EGP)</option>
-<option value="Jaguar Classic Black" data-price="200">Jaguar Classic Black (+200 EGP)</option>
-<option value="Mercedes-Benz Intense" data-price="200">Mercedes-Benz Intense (+200 EGP)</option>
-<option value="Azzaro Wanted" data-price="200">Azzaro Wanted (+200 EGP)</option>
-<option value="Halloween Man X" data-price="200">Halloween Man X (+200 EGP)</option>
-<option value="Antonio Banderas Blue" data-price="200">Antonio Banderas Blue (+200 EGP)</option>
-<option value="Joop Homme" data-price="200">Joop Homme (+200 EGP)</option>
-<option value="Bvlgari Man in Black" data-price="200">Bvlgari Man in Black (+200 EGP)</option>
-<option value="David Beckham Instinct" data-price="200">David Beckham Instinct (+200 EGP)</option>
-<option value="Bentley Intense" data-price="200">Bentley Intense (+200 EGP)</option>
-<option value="Rasasi Hawas" data-price="200">Rasasi Hawas (+200 EGP)</option>
-<option value="Ted Lapidus Black Soul" data-price="200">Ted Lapidus Black Soul (+200 EGP)</option>
-<option value="Swiss Arabian Shaghaf" data-price="200">Swiss Arabian Shaghaf (+200 EGP)</option>
-<option value="Arabian Oud Kalemat" data-price="200">Arabian Oud Kalemat (+200 EGP)</option>
-
-<!-- 🔸 العطور الرجالي النيش/الفخمة (400 EGP) -->
-<option value="Creed Aventus" data-price="400">Creed Aventus (Niche +400 EGP)</option>
-<option value="Sauvage Dior Elixir" data-price="400">Sauvage Dior Elixir (Niche +400 EGP)</option>
-<option value="Oud Wood Tom Ford" data-price="400">Oud Wood (Tom Ford) (Niche +400 EGP)</option>
-<option value="Tuscan Leather Tom Ford" data-price="400">Tuscan Leather (Tom Ford) (Niche +400 EGP)</option>
-<option value="Amouage Interlude" data-price="400">Amouage Interlude (Niche +400 EGP)</option>
-<option value="Memo Irish Leather" data-price="400">Memo Irish Leather (Niche +400 EGP)</option>
-<option value="Nishane Hacivat" data-price="400">Hacivat Nishane (Niche +400 EGP)</option>
-<option value="Initio Rehab" data-price="400">Initio Rehab (Niche +400 EGP)</option>
-<option value="Roja Elysium" data-price="400">Roja Elysium (Niche +400 EGP)</option>
-<option value="Ombre Leather Tom Ford" data-price="400">Ombre Leather (Tom Ford) (Niche +400 EGP)</option>
-<option value="Parfums de Marly Layton" data-price="400">Layton (PDM) (Niche +400 EGP)</option>
-<option value="Parfums de Marly Carlisle" data-price="400">Carlisle (PDM) (Niche +400 EGP)</option>
-<option value="Maison Francis G. Oud Satin Mood" data-price="400">Oud Satin Mood (Niche +400 EGP)</option>
-<option value="Tobacco Vanille Tom Ford" data-price="400">Tobacco Vanille (Tom Ford) (Niche +400 EGP)</option>
-<option value="Maison Margiela By The Fireplace" data-price="400">By The Fireplace (Niche +400 EGP)</option>
-<option value="Mancera Cedrat Boise" data-price="400">Mancera Cedrat Boise (Niche +400 EGP)</option>
-<option value="Xerjoff Naxos" data-price="400">Xerjoff Naxos (Niche +400 EGP)</option>
-<option value="Alexandria II Xerjoff" data-price="400">Alexandria II (Niche +400 EGP)</option>
-<option value="Amouage Reflection Man" data-price="400">Reflection Man (Niche +400 EGP)</option>
-<option value="Frederic Malle Musc Ravageur" data-price="400">Musc Ravageur (Niche +400 EGP)</option>
-
-    </select>
-  </div>
-
-  <!-- Step 4: Choose Scent -->
-  <!-- <div class="custom-step">
-    <h3>Men</h3>
-    <select id="male-perfumes">
-      <option value="" disabled selected>اختر برفيوم رجالي</option>
-      <option value="Blue Ocean" data-price="400">Blue Ocean (+400 EGP)</option>
-      <option value="Oud Touch" data-price="450">Oud Touch (+450 EGP)</option>
-      <option value="Leather Amber" data-price="420">Leather Amber (+420 EGP)</option>
-    </select>
-  </div>
-
-  <div class="custom-step">
-    <h3>Women</h3>
-    <select id="female-perfumes">
-      <option value="" disabled selected>اختر برفيوم نسائي</option>
-      <option value="Vanilla Musk" data-price="390">Vanilla Musk (+390 EGP)</option>
-      <option value="Sweet Rose" data-price="410">Sweet Rose (+410 EGP)</option>
-      <option value="Fresh Citrus" data-price="380">Fresh Citrus (+380 EGP)</option>
-    </select>
-  </div> -->
-
-  <!-- Step 5: Choose Packaging -->
-  <div class="custom-step">
-    <h3>Women Perfumes</h3>
-    <select id="packaging-select">
-            <option value="" disabled selected> Choose your perfume</option>
-
-      <!-- عطور نسائية عادية (200 EGP) -->
-<option value="Vanilla Musk" data-price="200">Vanilla Musk (+200 EGP)</option>
-<option value="Sweet Rose" data-price="200">Sweet Rose (+200 EGP)</option>
-<option value="Fresh Citrus" data-price="200">Fresh Citrus (+200 EGP)</option>
-<option value="White Jasmine" data-price="200">White Jasmine (+200 EGP)</option>
-<option value="Ocean Breeze" data-price="200">Ocean Breeze (+200 EGP)</option>
-<option value="Cherry Blossom" data-price="200">Cherry Blossom (+200 EGP)</option>
-<option value="Peach Garden" data-price="200">Peach Garden (+200 EGP)</option>
-<option value="Pink Berry" data-price="200">Pink Berry (+200 EGP)</option>
-<option value="Soft Musk" data-price="200">Soft Musk (+200 EGP)</option>
-<option value="Coconut Dream" data-price="200">Coconut Dream (+200 EGP)</option>
-<option value="Floral Fantasy" data-price="200">Floral Fantasy (+200 EGP)</option>
-<option value="Lavender Sky" data-price="200">Lavender Sky (+200 EGP)</option>
-<option value="Sugar Oud" data-price="200">Sugar Oud (+200 EGP)</option>
-<option value="Amber Wood" data-price="200">Amber Wood (+200 EGP)</option>
-<option value="Sandal Touch" data-price="200">Sandal Touch (+200 EGP)</option>
-<option value="Berry Vanilla" data-price="200">Berry Vanilla (+200 EGP)</option>
-<option value="Lemon Blossom" data-price="200">Lemon Blossom (+200 EGP)</option>
-<option value="White Musk" data-price="200">White Musk (+200 EGP)</option>
-<option value="Fruity Kiss" data-price="200">Fruity Kiss (+200 EGP)</option>
-<option value="Melon Mist" data-price="200">Melon Mist (+200 EGP)</option>
-
-<!-- عطور نسائية نيش (400 EGP) -->
-<option value="Baccarat Rouge" data-price="400">Baccarat Rouge (Niche +400 EGP)</option>
-<option value="Delina" data-price="400">Delina (Niche +400 EGP)</option>
-<option value="Oriana" data-price="400">Oriana (Niche +400 EGP)</option>
-<option value="Her Majesty Oud" data-price="400">Her Majesty Oud (Niche +400 EGP)</option>
-<option value="Rose Prick" data-price="400">Rose Prick (Niche +400 EGP)</option>
-<option value="Velvet Orchid" data-price="400">Velvet Orchid (Niche +400 EGP)</option>
-<option value="Black Saffron" data-price="400">Black Saffron (Niche +400 EGP)</option>
-<option value="Velvet Rose" data-price="400">Velvet Rose (Niche +400 EGP)</option>
-<option value="L'interdit" data-price="400">L'interdit (Niche +400 EGP)</option>
-<option value="Amber Femme" data-price="400">Amber Femme (Niche +400 EGP)</option>
-
-    </select>
-  </div>
-
-  <!-- Order Summary -->
-  <div id="order-summary" class="section custom-step">
-    <h3> Order summary </h3>
-    <p id="summary-size">Size: ---</p>
-    <p id="summary-bottle">Bottle: ---</p>
-    <p id="summary-alcohol">perfume: ---</p>
-    <p id="summary-packaging">perfume: ---</p>
-    <!-- <p id="summary-perfume">Perfume: ---</p> -->
-    <p id="total-price">Total Price: 0 EGP</p>
-    <button id="checkout-button">Next</button>
-  </div>
-
-  <!-- Customer Info Form -->
-  <form id="customer-form" style="display: none; margin-top: 20px;">
-    <h3>Enter Your Details</h3>
-    <input type="text" id="customer-name" placeholder="Full Name" required />
-    <input type="text" id="customer-phone" placeholder="Phone Number" required />
-    <textarea id="customer-address" placeholder="Delivery Address" required></textarea>
-    <button type="button" id="submit-order">Send Order</button>
-  </form>
-</section>
-
-
-  <section id="reviews" class="interactive-section">
-    <h2>Customer Reviews</h2>
-    <div class="reviews-container">
-      <div class="review">"Extremely luxurious scent with excellent longevity! Highly recommended."</div>
-      <div class="review">"Excellent service and high-quality perfumes that rival global brands."</div>
-      <div class="review">"Ordered multiple times and VINDEX never disappointed."</div>
+  <!-- About Section -->
+  <section id="about" class="about-section">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <h2 class="section-title">The Art of <span class="gold-text">Luxury</span></h2>
+        <div class="title-underline"></div>
+      </div>
+      <div class="about-content">
+        <div class="about-text" data-aos="fade-right">
+          <p>
+            VINDEX was founded to be a pioneer in the world of luxury perfumes in Egypt and the Arab world.
+            We pay special attention to every detail in perfume crafting, relying on the finest natural essential oils
+            to provide a unique fragrance experience distinguished by longevity and strong sillage.
+          </p>
+          <p>
+            With VINDEX, you don't just own a perfume, you carry a symbol of power, elegance, and distinction.
+          </p>
+          <div class="about-features">
+            <div class="feature">
+              <i class="fas fa-gem"></i>
+              <span>Premium Quality</span>
+            </div>
+            <div class="feature">
+              <i class="fas fa-clock"></i>
+              <span>Long Lasting</span>
+            </div>
+            <div class="feature">
+              <i class="fas fa-star"></i>
+              <span>Exclusive Blends</span>
+            </div>
+          </div>
+        </div>
+        <div class="about-image" data-aos="fade-left">
+          <div class="image-wrapper">
+            <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=600" alt="Luxury Perfume">
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section id="contact" class="contact interactive-section">
-    <h2>Order Now</h2>
-    <p>Contact us directly on WhatsApp to order your favorite perfume or for inquiries:</p>
-    <a href="https://wa.me/+201055741189" target="_blank" rel="noopener noreferrer">
-      <button class="cta-button">Contact us on WhatsApp</button>
-    </a>
-    <p>
-      Follow us on:
-      <a href="https://www.facebook.com/Abody710" target="_blank" rel="noopener noreferrer">Facebook</a> |
-      <a href="https://www.instagram.com/karim.abdelrahman2023" target="_blank" rel="noopener noreferrer">Instagram</a>
-    </p>
+  <!-- Collection Preview -->
+  <section id="collection" class="collection-section">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <h2 class="section-title">Our <span class="gold-text">Collection</span></h2>
+        <div class="title-underline"></div>
+      </div>
+      <div class="collection-grid">
+        <div class="collection-card" data-aos="zoom-in" data-aos-delay="100">
+          <div class="card-image">
+            <img src="https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=400" alt="Men's Collection">
+            <div class="card-overlay">
+              <h3>Men's Collection</h3>
+              <p>Bold & Sophisticated</p>
+              <a href="#design-perfume" class="btn-explore">Explore →</a>
+            </div>
+          </div>
+        </div>
+        <div class="collection-card" data-aos="zoom-in" data-aos-delay="200">
+          <div class="card-image">
+            <img src="https://images.unsplash.com/photo-1547887538-047f814bfb64?w=400" alt="Women's Collection">
+            <div class="card-overlay">
+              <h3>Women's Collection</h3>
+              <p>Elegant & Timeless</p>
+              <a href="#design-perfume" class="btn-explore">Explore →</a>
+            </div>
+          </div>
+        </div>
+        <div class="collection-card" data-aos="zoom-in" data-aos-delay="300">
+          <div class="card-image">
+            <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=400" alt="Exclusive Collection">
+            <div class="card-overlay">
+              <h3>Niche Collection</h3>
+              <p>Rare & Exclusive</p>
+              <a href="#design-perfume" class="btn-explore">Explore →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <section id="about" class="interactive-section">
-    <h2>About Us</h2>
-    <p>
-      VINDEX was founded to be a pioneer in the world of luxury perfumes in Egypt and the Arab world.
-      We pay special attention to every detail in perfume crafting, relying on the finest natural essential oils
-      to provide a unique fragrance experience distinguished by longevity and strong sillage.
-      With VINDEX, you don’t just own a perfume, you carry a symbol of power, elegance, and distinction.
-    </p>
+  <!-- Design Your Perfume Section -->
+  <!-- Replace the Design Your Perfume Section with this updated version -->
+
+<!-- Design Your Perfume Section -->
+<section id="design-perfume" class="customizer-section">
+  <div class="container">
+    <div class="section-header" data-aos="fade-up">
+      <h2 class="section-title">Design Your <span class="gold-text">Signature Scent</span></h2>
+      <div class="title-underline"></div>
+    </div>
+    
+    <div class="customizer-wrapper" data-aos="fade-up">
+      <!-- Progress Bar -->
+      <div class="progress-bar">
+        <div class="progress-step active" data-step="1">
+          <div class="step-number">1</div>
+          <span>Size</span>
+        </div>
+        <div class="progress-step" data-step="2">
+          <div class="step-number">2</div>
+          <span>Bottle</span>
+        </div>
+        <div class="progress-step" data-step="3">
+          <div class="step-number">3</div>
+          <span>Men's</span>
+        </div>
+        <div class="progress-step" data-step="4">
+          <div class="step-number">4</div>
+          <span>Women's</span>
+        </div>
+      </div>
+
+      <div class="customizer-content">
+        <!-- Step 1: Size -->
+        <div class="custom-step step-active" data-step="1">
+          <h3><i class="fas fa-ruler"></i> Choose Bottle Size</h3>
+          <div class="option-cards">
+            <div class="option-card" data-value="30ml" data-price="-100">
+              <div class="option-icon">30ml</div>
+              <div class="option-name">Travel Size</div>
+              <div class="option-price">-100 EGP</div>
+            </div>
+            <div class="option-card" data-value="50ml" data-price="0">
+              <div class="option-icon">50ml</div>
+              <div class="option-name">Standard</div>
+              <div class="option-price">Base Price</div>
+            </div>
+            <div class="option-card" data-value="100ml" data-price="150">
+              <div class="option-icon">100ml</div>
+              <div class="option-name">Luxury Size</div>
+              <div class="option-price">+150 EGP</div>
+            </div>
+          </div>
+          <select id="perfume-size" class="hidden-select">
+            <option value="">Select size</option>
+            <option value="30ml" data-price="-100">30ml</option>
+            <option value="50ml" data-price="0">50ml</option>
+            <option value="100ml" data-price="150">100ml</option>
+          </select>
+        </div>
+
+        <!-- Step 2: Bottle Type -->
+        <div class="custom-step" data-step="2">
+          <h3><i class="fas fa-flask"></i> Choose Bottle Type</h3>
+          <div class="option-cards">
+            <div class="option-card" data-value="Plastic" data-price="20">
+              <div class="option-icon"><i class="fas fa-spray-can"></i></div>
+              <div class="option-name">Plastic</div>
+              <div class="option-price">+20 EGP</div>
+            </div>
+            <div class="option-card" data-value="Glass" data-price="40">
+              <div class="option-icon"><i class="fas fa-wine-bottle"></i></div>
+              <div class="option-name">Glass</div>
+              <div class="option-price">+40 EGP</div>
+            </div>
+            <div class="option-card" data-value="Luxury" data-price="60">
+              <div class="option-icon"><i class="fas fa-gem"></i></div>
+              <div class="option-name">Luxury Crystal</div>
+              <div class="option-price">+60 EGP</div>
+            </div>
+          </div>
+          <select id="bottle-type" class="hidden-select">
+            <option value="">Select bottle type</option>
+            <option value="Plastic" data-price="20">Plastic</option>
+            <option value="Glass" data-price="40">Glass</option>
+            <option value="Luxury" data-price="60">Luxury</option>
+          </select>
+        </div>
+
+        <!-- Step 3: Men's Perfume - COMPLETE LIST -->
+        <div class="custom-step" data-step="3">
+          <h3><i class="fas fa-mars"></i> Men's Perfume Collection</h3>
+          <div class="perfume-select-wrapper">
+            <div class="perfume-filter-tabs">
+              <button class="filter-tab active" data-filter="all">All</button>
+              <button class="filter-tab" data-filter="classic">Classic (200 EGP)</button>
+              <button class="filter-tab" data-filter="niche">Niche (400 EGP)</button>
+            </div>
+            <select id="mens-perfume-select" class="perfume-select">
+              <option value="">Choose your perfume</option>
+              
+              <!-- Classic Collection (200 EGP) -->
+              <optgroup label="🔹 Classic Collection (+200 EGP)">
+                <option value="Sauvage Dior EDT" data-price="200">Sauvage Dior EDT</option>
+                <option value="One Million Paco Rabanne" data-price="200">One Million</option>
+                <option value="Versace Eros" data-price="200">Versace Eros</option>
+                <option value="Bleu de Chanel" data-price="200">Bleu de Chanel</option>
+                <option value="YSL Y" data-price="200">YSL Y</option>
+                <option value="Invictus" data-price="200">Invictus</option>
+                <option value="Acqua Di Gio" data-price="200">Acqua Di Gio</option>
+                <option value="Stronger With You" data-price="200">Stronger With You</option>
+                <option value="Dunhill Desire Red" data-price="200">Dunhill Desire Red</option>
+                <option value="Mont Blanc Legend" data-price="200">Mont Blanc Legend</option>
+                <option value="Club De Nuit Intense" data-price="200">Club De Nuit Intense</option>
+                <option value="Hugo Boss Bottled" data-price="200">Hugo Boss Bottled</option>
+                <option value="Lacoste Blanc" data-price="200">Lacoste Blanc</option>
+                <option value="John Varvatos" data-price="200">John Varvatos</option>
+                <option value="CK One Shock" data-price="200">CK One Shock</option>
+                <option value="Abercrombie Fierce" data-price="200">Abercrombie Fierce</option>
+                <option value="Givenchy Gentlemen" data-price="200">Givenchy Gentlemen</option>
+                <option value="Jaguar Classic Black" data-price="200">Jaguar Classic Black</option>
+                <option value="Mercedes-Benz Intense" data-price="200">Mercedes-Benz Intense</option>
+                <option value="Azzaro Wanted" data-price="200">Azzaro Wanted</option>
+                <option value="Halloween Man X" data-price="200">Halloween Man X</option>
+                <option value="Antonio Banderas Blue" data-price="200">Antonio Banderas Blue</option>
+                <option value="Joop Homme" data-price="200">Joop Homme</option>
+                <option value="Bvlgari Man in Black" data-price="200">Bvlgari Man in Black</option>
+                <option value="David Beckham Instinct" data-price="200">David Beckham Instinct</option>
+                <option value="Bentley Intense" data-price="200">Bentley Intense</option>
+                <option value="Rasasi Hawas" data-price="200">Rasasi Hawas</option>
+                <option value="Ted Lapidus Black Soul" data-price="200">Ted Lapidus Black Soul</option>
+                <option value="Swiss Arabian Shaghaf" data-price="200">Swiss Arabian Shaghaf</option>
+                <option value="Arabian Oud Kalemat" data-price="200">Arabian Oud Kalemat</option>
+              </optgroup>
+              
+              <!-- Niche/Luxury Collection (400 EGP) -->
+              <optgroup label="💎 Niche Collection (+400 EGP)">
+                <option value="Creed Aventus" data-price="400">Creed Aventus</option>
+                <option value="Sauvage Dior Elixir" data-price="400">Sauvage Dior Elixir</option>
+                <option value="Oud Wood Tom Ford" data-price="400">Oud Wood (Tom Ford)</option>
+                <option value="Tuscan Leather Tom Ford" data-price="400">Tuscan Leather (Tom Ford)</option>
+                <option value="Amouage Interlude" data-price="400">Amouage Interlude</option>
+                <option value="Memo Irish Leather" data-price="400">Memo Irish Leather</option>
+                <option value="Nishane Hacivat" data-price="400">Hacivat (Nishane)</option>
+                <option value="Initio Rehab" data-price="400">Initio Rehab</option>
+                <option value="Roja Elysium" data-price="400">Roja Elysium</option>
+                <option value="Ombre Leather Tom Ford" data-price="400">Ombre Leather (Tom Ford)</option>
+                <option value="Parfums de Marly Layton" data-price="400">Layton (PDM)</option>
+                <option value="Parfums de Marly Carlisle" data-price="400">Carlisle (PDM)</option>
+                <option value="Maison Francis G. Oud Satin Mood" data-price="400">Oud Satin Mood (MFK)</option>
+                <option value="Tobacco Vanille Tom Ford" data-price="400">Tobacco Vanille (Tom Ford)</option>
+                <option value="Maison Margiela By The Fireplace" data-price="400">By The Fireplace (MM)</option>
+                <option value="Mancera Cedrat Boise" data-price="400">Mancera Cedrat Boise</option>
+                <option value="Xerjoff Naxos" data-price="400">Xerjoff Naxos</option>
+                <option value="Alexandria II Xerjoff" data-price="400">Alexandria II (Xerjoff)</option>
+                <option value="Amouage Reflection Man" data-price="400">Reflection Man (Amouage)</option>
+                <option value="Frederic Malle Musc Ravageur" data-price="400">Musc Ravageur (FM)</option>
+              </optgroup>
+            </select>
+            
+            <!-- Visual Grid Alternative (Optional) -->
+            <div class="perfume-grid" style="display: none;">
+              <!-- This can be toggled to show a visual grid of perfumes -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Women's Perfume - COMPLETE LIST -->
+        <div class="custom-step" data-step="4">
+          <h3><i class="fas fa-venus"></i> Women's Perfume Collection</h3>
+          <div class="perfume-select-wrapper">
+            <div class="perfume-filter-tabs">
+              <button class="filter-tab active" data-filter="all">All</button>
+              <button class="filter-tab" data-filter="classic">Classic (200 EGP)</button>
+              <button class="filter-tab" data-filter="niche">Niche (400 EGP)</button>
+            </div>
+            <select id="womens-perfume-select" class="perfume-select">
+              <option value="">Choose your perfume</option>
+              
+              <!-- Classic Women's Collection (200 EGP) -->
+              <optgroup label="🌸 Classic Collection (+200 EGP)">
+                <option value="Vanilla Musk" data-price="200">Vanilla Musk</option>
+                <option value="Sweet Rose" data-price="200">Sweet Rose</option>
+                <option value="Fresh Citrus" data-price="200">Fresh Citrus</option>
+                <option value="White Jasmine" data-price="200">White Jasmine</option>
+                <option value="Ocean Breeze" data-price="200">Ocean Breeze</option>
+                <option value="Cherry Blossom" data-price="200">Cherry Blossom</option>
+                <option value="Peach Garden" data-price="200">Peach Garden</option>
+                <option value="Pink Berry" data-price="200">Pink Berry</option>
+                <option value="Soft Musk" data-price="200">Soft Musk</option>
+                <option value="Coconut Dream" data-price="200">Coconut Dream</option>
+                <option value="Floral Fantasy" data-price="200">Floral Fantasy</option>
+                <option value="Lavender Sky" data-price="200">Lavender Sky</option>
+                <option value="Sugar Oud" data-price="200">Sugar Oud</option>
+                <option value="Amber Wood" data-price="200">Amber Wood</option>
+                <option value="Sandal Touch" data-price="200">Sandal Touch</option>
+                <option value="Berry Vanilla" data-price="200">Berry Vanilla</option>
+                <option value="Lemon Blossom" data-price="200">Lemon Blossom</option>
+                <option value="White Musk" data-price="200">White Musk</option>
+                <option value="Fruity Kiss" data-price="200">Fruity Kiss</option>
+                <option value="Melon Mist" data-price="200">Melon Mist</option>
+              </optgroup>
+              
+              <!-- Niche Women's Collection (400 EGP) -->
+              <optgroup label="💎 Niche Collection (+400 EGP)">
+                <option value="Baccarat Rouge" data-price="400">Baccarat Rouge 540</option>
+                <option value="Delina" data-price="400">Delina (PDM)</option>
+                <option value="Oriana" data-price="400">Oriana (PDM)</option>
+                <option value="Her Majesty Oud" data-price="400">Her Majesty Oud</option>
+                <option value="Rose Prick" data-price="400">Rose Prick (Tom Ford)</option>
+                <option value="Velvet Orchid" data-price="400">Velvet Orchid (Tom Ford)</option>
+                <option value="Black Saffron" data-price="400">Black Saffron</option>
+                <option value="Velvet Rose" data-price="400">Velvet Rose & Oud</option>
+                <option value="L'interdit" data-price="400">L'interdit (Givenchy)</option>
+                <option value="Amber Femme" data-price="400">Amber Femme</option>
+              </optgroup>
+            </select>
+            
+            <!-- Visual Grid Alternative (Optional) -->
+            <div class="perfume-grid" style="display: none;">
+              <!-- This can be toggled to show a visual grid of perfumes -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="step-navigation">
+          <button class="btn-nav btn-prev" disabled>
+            <i class="fas fa-arrow-left"></i> Previous
+          </button>
+          <button class="btn-nav btn-next">
+            Next <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="order-summary-card">
+        <h3><i class="fas fa-shopping-cart"></i> Order Summary</h3>
+        <div class="summary-items">
+          <div class="summary-item">
+            <span>Size:</span>
+            <span id="summary-size">Not selected</span>
+          </div>
+          <div class="summary-item">
+            <span>Bottle:</span>
+            <span id="summary-bottle">Not selected</span>
+          </div>
+          <div class="summary-item">
+            <span>Men's Perfume:</span>
+            <span id="summary-alcohol">Not selected</span>
+          </div>
+          <div class="summary-item">
+            <span>Women's Perfume:</span>
+            <span id="summary-packaging">Not selected</span>
+          </div>
+        </div>
+        <div class="summary-total">
+          <span>Total:</span>
+          <span id="total-price">0 EGP</span>
+        </div>
+        <button id="checkout-button" class="btn btn-checkout" disabled>
+          Proceed to Checkout
+        </button>
+      </div>
+
+      <!-- Customer Form -->
+      <div id="customer-form" class="customer-form-card">
+        <h3><i class="fas fa-user"></i> Complete Your Order</h3>
+        <form id="order-form">
+          <div class="form-group">
+            <label for="customer-name">Full Name</label>
+            <input type="text" id="customer-name" required>
+          </div>
+          <div class="form-group">
+            <label for="customer-phone">Phone Number</label>
+            <input type="tel" id="customer-phone" required>
+          </div>
+          <div class="form-group">
+            <label for="customer-address">Delivery Address</label>
+            <textarea id="customer-address" rows="3" required></textarea>
+          </div>
+          <button type="submit" id="submit-order" class="btn btn-submit">
+            <i class="fas fa-paper-plane"></i> Send Order via WhatsApp
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- Reviews Section -->
+  <section id="reviews" class="reviews-section">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <h2 class="section-title">What Our <span class="gold-text">Customers Say</span></h2>
+        <div class="title-underline"></div>
+      </div>
+      <div class="swiper reviews-swiper" data-aos="fade-up">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <div class="review-card">
+              <div class="stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <p>"Extremely luxurious scent with excellent longevity! The quality rivals international brands."</p>
+              <div class="reviewer">
+                <div class="reviewer-avatar">AK</div>
+                <div class="reviewer-info">
+                  <h4>Ahmed K.</h4>
+                  <span>Verified Buyer</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-slide">
+            <div class="review-card">
+              <div class="stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <p>"Excellent service and high-quality perfumes. VINDEX never disappoints!"</p>
+              <div class="reviewer">
+                <div class="reviewer-avatar">SM</div>
+                <div class="reviewer-info">
+                  <h4>Sara M.</h4>
+                  <span>Verified Buyer</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-slide">
+            <div class="review-card">
+              <div class="stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <p>"Ordered multiple times and the quality is consistently amazing. Highly recommended!"</p>
+              <div class="reviewer">
+                <div class="reviewer-avatar">MY</div>
+                <div class="reviewer-info">
+                  <h4>Mohamed Y.</h4>
+                  <span>Verified Buyer</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="swiper-pagination"></div>
+      </div>
+    </div>
   </section>
-  <!-- Order Confirmation Message -->
 
+  <!-- Contact Section -->
+  <section id="contact" class="contact-section">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <h2 class="section-title">Get in <span class="gold-text">Touch</span></h2>
+        <div class="title-underline"></div>
+      </div>
+      <div class="contact-content">
+        <div class="contact-info" data-aos="fade-right">
+          <h3>Order Your Signature Scent</h3>
+          <p>Contact us directly for personalized service and exclusive offers.</p>
+          <div class="contact-methods">
+            <a href="https://wa.me/+201055741189" class="contact-method">
+              <i class="fab fa-whatsapp"></i>
+              <div>
+                <h4>WhatsApp</h4>
+                <span>+20 105 574 1189</span>
+              </div>
+            </a>
+            <div class="contact-method">
+              <i class="fas fa-clock"></i>
+              <div>
+                <h4>Working Hours</h4>
+                <span>Daily: 10 AM - 10 PM</span>
+              </div>
+            </div>
+          </div>
+          <div class="social-links">
+            <a href="https://www.facebook.com/Abody710" target="_blank" class="social-link">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://www.instagram.com/karim.abdelrahman2023" target="_blank" class="social-link">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://wa.me/+201055741189" target="_blank" class="social-link">
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </div>
+        </div>
+        <div class="contact-image" data-aos="fade-left">
+          <img src="https://images.unsplash.com/photo-1545840716-c82e9eec6930?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Contact VINDEX">
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <img src="img/vindex_logo_transparent.png" alt="VINDEX" class="footer-logo">
+          <p>Luxury Perfumes Crafted for Excellence</p>
+        </div>
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          <a href="#about">About Us</a>
+          <a href="#collection">Collection</a>
+          <a href="#design-perfume">Design Perfume</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <div class="footer-newsletter">
+          <h4>Stay Updated</h4>
+          <p>Get exclusive offers and new arrivals</p>
+          <a href="https://wa.me/+201055741189" class="btn btn-outline-small">Join WhatsApp</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 VINDEX. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
 
+  <!-- Back to Top -->
+  <button class="back-to-top" id="backToTop">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
