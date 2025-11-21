@@ -1058,9 +1058,12 @@
         let editingProductId = null;
 
         // ==================== GOOGLE SHEETS & EMAIL CONFIGURATION ====================
-        // IMPORTANT: Replace these with your actual values
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx5aqcLL_QlZYEqRLuoTc5gdoVXRpBOCE2yxQ7yRTw1jcHNQes-3-lJRaRrzfGVwvf0dg/exec';
-        const ADMIN_EMAIL = 'karim.abdelrahman2023@gmail.com'; // Email to receive order notifications
+        // ⚠️ مهم جداً: حط الـ Web App URL هنا بعد ما تعمل Deploy للسكريبت
+        // مثال: 'https://script.google.com/macros/s/AKfycbxxx.../exec'
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx5aqcLL_QlZYEqRLuoTc5gdoVXRpBOCE2yxQ7yRTw1jcHNQes-3-lJRaRrzfGVwvf0dg/exec';  // 👈 حط الرابط هنا بين علامات التنصيص
+        
+        // ملحوظة: لو سيبت الرابط فاضي، الطلبات هتتحفظ بس محلياً في المتصفح
+        // عشان الإيميل والشيت يشتغلوا، لازم تحط الرابط
 
         // ==================== INITIALIZATION ====================
         function init() {
