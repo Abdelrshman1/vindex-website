@@ -166,105 +166,18 @@
   </section>
 
   <!-- Design Your Perfume Section -->
-  <!-- Replace the Design Your Perfume Section with this updated version -->
-
-<!-- Design Your Perfume Section -->
+ <!-- Design Your Perfume Section - NEW SYSTEM -->
 <section id="design-perfume" class="customizer-section">
   <div class="container">
     <div class="section-header" data-aos="fade-up">
-      <h2 class="section-title">Design Your <span class="gold-text">Signature Scent</span></h2>
+      <h2 class="section-title">اختر <span class="gold-text">عطرك المفضل</span></h2>
       <div class="title-underline"></div>
     </div>
     
-    <div class="customizer-wrapper" data-aos="fade-up">
-      <!-- Progress Bar -->
-      <div class="progress-bar">
-        <div class="progress-step active" data-step="1">
-          <div class="step-number">1</div>
-          <span>Size</span>
-        </div>
-        <div class="progress-step" data-step="2">
-          <div class="step-number">2</div>
-          <span>Bottle</span>
-        </div>
-        <div class="progress-step" data-step="3">
-          <div class="step-number">3</div>
-          <span>Men's</span>
-        </div>
-        <div class="progress-step" data-step="4">
-          <div class="step-number">4</div>
-          <span>Women's</span>
-        </div>
-      </div>
-
-      <div class="customizer-content">
-        <!-- Step 1: Size -->
-        <div class="custom-step step-active" data-step="1">
-          <h3><i class="fas fa-ruler"></i> Choose Bottle Size</h3>
-          <div class="option-cards">
-            <div class="option-card" data-value="30ml" data-price="-100">
-              <div class="option-icon">30ml</div>
-              <div class="option-name">Travel Size</div>
-              <div class="option-price">-100 EGP</div>
-            </div>
-            <div class="option-card" data-value="50ml" data-price="0">
-              <div class="option-icon">50ml</div>
-              <div class="option-name">Standard</div>
-              <div class="option-price">Base Price</div>
-            </div>
-            <div class="option-card" data-value="100ml" data-price="150">
-              <div class="option-icon">100ml</div>
-              <div class="option-name">Luxury Size</div>
-              <div class="option-price">+150 EGP</div>
-            </div>
-          </div>
-          <select id="perfume-size" class="hidden-select">
-            <option value="">Select size</option>
-            <option value="30ml" data-price="-100">30ml</option>
-            <option value="50ml" data-price="0">50ml</option>
-            <option value="100ml" data-price="150">100ml</option>
-          </select>
-        </div>
-
-        <!-- Step 2: Bottle Type -->
-        <div class="custom-step" data-step="2">
-          <h3><i class="fas fa-flask"></i> Choose Bottle Type</h3>
-          <div class="option-cards">
-            <div class="option-card" data-value="Plastic" data-price="20">
-              <div class="option-icon"><i class="fas fa-spray-can"></i></div>
-              <div class="option-name">Plastic</div>
-              <div class="option-price">+20 EGP</div>
-            </div>
-            <div class="option-card" data-value="Glass" data-price="40">
-              <div class="option-icon"><i class="fas fa-wine-bottle"></i></div>
-              <div class="option-name">Glass</div>
-              <div class="option-price">+40 EGP</div>
-            </div>
-            <div class="option-card" data-value="Luxury" data-price="60">
-              <div class="option-icon"><i class="fas fa-gem"></i></div>
-              <div class="option-name">Luxury Crystal</div>
-              <div class="option-price">+60 EGP</div>
-            </div>
-          </div>
-          <select id="bottle-type" class="hidden-select">
-            <option value="">Select bottle type</option>
-            <option value="Plastic" data-price="20">Plastic</option>
-            <option value="Glass" data-price="40">Glass</option>
-            <option value="Luxury" data-price="60">Luxury</option>
-          </select>
-        </div>
-
-       <div class="custom-step" data-step="3">
-    <select id="mens-perfume-select" class="perfume-select">
-        <option value="">Choose your perfume</option>
-        </select>
-    </div>
-
-<div class="custom-step" data-step="4">
-    <select id="womens-perfume-select" class="perfume-select">
-        <option value="">Choose your perfume</option>
-        </select>
-    </div>
+    <!-- React App Container -->
+    <div id="perfume-system-root"></div>
+  </div>
+</section>
         <!-- Navigation Buttons -->
         <div class="step-navigation">
           <button class="btn-nav btn-prev" disabled>
