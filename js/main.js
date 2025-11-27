@@ -1,869 +1,517 @@
-// main.js - Professional VINDEX Website
+import React, { useState, useEffect } from 'react';
+import { ShoppingCart, Search, Filter, Package, Info } from 'lucide-react';
 
-// =====================
-// Global Variables
-// =====================
-let currentStep = 1;
-const totalSteps = 4;
-let orderData = {
-    size: null,
-    bottle: null,
-    menPerfume: null,
-    womenPerfume: null,
-    totalPrice: 0
-};
+const VindexPerfumeSystem = () => {
+  const [perfumes, setPerfumes] = useState([]);
+  const [filteredPerfumes, setFilteredPerfumes] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedGender, setSelectedGender] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [cart, setCart] = useState([]);
+  const [showCart, setShowCart] = useState(false);
+  const [customerInfo, setCustomerInfo] = useState({
+    name: '',
+    phone: '',
+    address: ''
+  });
+  const [loading, setLoading] = useState(true);
 
-// =====================
-// Google Sheet Integration (New/Modified Section)
-// =====================
+  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyzQW-uc8aENAyheRcRsQ24negp-LUuoPiiW687mcrlYnskdQ4F8nb6MCeMDNnDdGw_/exec';
 
-// **⚠️ IMPORTANT: REPLACE THIS URL**
-// هذا هو الرابط الذي ستحصل عليه بعد نشر جدول بيانات جوجل الخاص بك كـ JSON API (Web App)
-const PERFUME_DATA_URL = 'https://script.google.com/macros/s/AKfycbyzQW-uc8aENAyheRcRsQ24negp-LUuoPiiW687mcrlYnskdQ4F8nb6MCeMDNnDdGw_/exec'; 
+  useEffect(() => {
+    fetchPerfumes();
+  }, []);
 
-// IDs for the perfume selects in HTML
-const MENS_SELECT_ID = 'mens-perfume-select';
-const WOMENS_SELECT_ID = 'womens-perfume-select';
-
-// Function to fetch data from Google Sheet and populate selects
-async function loadAndPopulatePerfumes() {
-    console.log("Attempting to load perfume data...");
+  const fetchPerfumes = async () => {
     try {
-        // إذا كنت تستخدم Google Apps Script، قد تحتاج لـ 'no-cache' لتحديث البيانات بسرعة
-        const response = await fetch(PERFUME_DATA_URL, { cache: 'no-cache' }); 
-        
-        // يجب أن تعود البيانات في شكل مصفوفة من الكائنات (Array of Objects)
-        const allPerfumes = await response.json(); 
+      setLoading(true);
+      const response = await fetch(SHEET_URL, { cache: 'no-cache' });
+      const data = await response.json();
+      
+      const cleanedData = data.map(item => ({
+        id: item.Name?.replace(/\s+/g, '_'),
+        name: item.Name || '',
+        type: item.Type || '',
+        category: item.Category || '',
+        price30ml: parseInt(item.Price_30ml) || 0,
+        price50ml: parseInt(item.Price_50ml) || 0,
+        price100ml: parseInt(item.Price_100ml) || 0,
+        stock: parseInt(item.Stock) || 0,
+        description: item.Description || '',
+        notes: item.Notes || ''
+      }));
 
-        // تأكد من أن البيانات هي مصفوفة وتحتوي على عناصر
-        if (!Array.isArray(allPerfumes) || allPerfumes.length === 0) {
-            console.error("Perfume data is empty or invalid.");
-            showNotification('Error loading perfumes. Please contact support.', 'error');
-            return;
-        }
-
-        // فلترة العطور حسب النوع (افترض أن لديك عمود اسمه 'Type' في الشيت)
-        const mensPerfumes = allPerfumes.filter(p => p.Type && p.Type.toLowerCase() === "men's");
-        const womensPerfumes = allPerfumes.filter(p => p.Type && p.Type.toLowerCase() === "women's");
-
-        // ملء القوائم المنسدلة
-        populateSelect(MENS_SELECT_ID, mensPerfumes);
-        populateSelect(WOMENS_SELECT_ID, womensPerfumes);
-        
-        // إعادة تهيئة المستمعات بعد ملء القوائم
-        initializeSelectListeners();
-        
-        console.log("Perfume data loaded and selectors populated successfully.");
-
+      setPerfumes(cleanedData);
+      setFilteredPerfumes(cleanedData);
+      setLoading(false);
     } catch (error) {
-        console.error("Failed to load perfume data:", error);
-        showNotification('Failed to load perfume list. Check your connection.', 'error');
+      console.error('Error loading perfumes:', error);
+      setLoading(false);
     }
-}
+  };
 
-// Function to populate a single select element
-function populateSelect(selectId, perfumes) {
-    const selectElement = document.getElementById(selectId);
-    if (!selectElement) return;
+  useEffect(() => {
+    let filtered = perfumes;
 
-    // البدء بخيار فارغ
-    selectElement.innerHTML = '<option value="">Choose your perfume</option>';
+    if (selectedGender !== 'all') {
+      filtered = filtered.filter(p => p.type.toLowerCase() === selectedGender);
+    }
 
-    // تجميع العطور حسب الفئة (Category: Classic, Niche)
-    const groupedPerfumes = perfumes.reduce((acc, perfume) => {
-        // يجب أن تتطابق أسماء الأعمدة مع أسماء الأعمدة في Google Sheet
-        const category = perfume.Category; 
-        const price = parseInt(perfume.Price || 0);
-        
-        // يجب أن تكون الفئة والسعر موجودين
-        if (!category || isNaN(price)) return acc; 
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter(p => p.category.toLowerCase() === selectedCategory);
+    }
 
-        if (!acc[category]) {
-            acc[category] = {
-                price: price,
-                items: []
-            };
+    if (searchTerm) {
+      filtered = filtered.filter(p => 
+        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    setFilteredPerfumes(filtered);
+  }, [selectedGender, selectedCategory, searchTerm, perfumes]);
+
+  const addToCart = (perfume, size) => {
+    const priceKey = `price${size}ml`;
+    const price = perfume[priceKey];
+    
+    if (perfume.stock <= 0) {
+      alert('⚠️ هذا العطر غير متوفر حالياً');
+      return;
+    }
+
+    const cartItem = {
+      id: `${perfume.id}_${size}`,
+      name: perfume.name,
+      size: size,
+      price: price,
+      quantity: 1,
+      perfume: perfume
+    };
+
+    const existingItem = cart.find(item => item.id === cartItem.id);
+    
+    if (existingItem) {
+      if (existingItem.quantity >= perfume.stock) {
+        alert(`⚠️ الكمية المتاحة فقط ${perfume.stock}`);
+        return;
+      }
+      setCart(cart.map(item => 
+        item.id === cartItem.id 
+          ? {...item, quantity: item.quantity + 1}
+          : item
+      ));
+    } else {
+      setCart([...cart, cartItem]);
+    }
+
+    showNotification(`✅ تم إضافة ${perfume.name} (${size}ml) للسلة`);
+  };
+
+  const showNotification = (message) => {
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #D4AF37, #B8941F);
+      color: #0A0A0A;
+      padding: 1rem 2rem;
+      border-radius: 10px;
+      font-weight: 600;
+      z-index: 10000;
+      animation: slideIn 0.3s ease;
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+  };
+
+  const updateQuantity = (id, change) => {
+    setCart(cart.map(item => {
+      if (item.id === id) {
+        const newQuantity = item.quantity + change;
+        if (newQuantity <= 0) return null;
+        if (newQuantity > item.perfume.stock) {
+          alert(`⚠️ الكمية المتاحة فقط ${item.perfume.stock}`);
+          return item;
         }
-        acc[category].items.push(perfume);
-        return acc;
-    }, {});
-    
-    // ترتيب أسماء الفئات لتظهر بالترتيب (مثل: Classic أولاً ثم Niche)
-    const sortedCategories = Object.keys(groupedPerfumes).sort((a, b) => {
-        // ترتيب تصاعدي حسب السعر
-        return groupedPerfumes[a].price - groupedPerfumes[b].price;
-    });
+        return {...item, quantity: newQuantity};
+      }
+      return item;
+    }).filter(Boolean));
+  };
 
-    // إضافة مجموعات الخيارات (Optgroups)
-    sortedCategories.forEach(category => {
-        const groupData = groupedPerfumes[category];
-        const optgroup = document.createElement('optgroup');
-        
-        // بناء تسمية المجموعة (Optgroup Label)
-        optgroup.label = `🔹 ${category} Collection (+${groupData.price} EGP)`; 
-        
-        groupData.items.forEach(perfume => {
-            const option = document.createElement('option');
-            option.value = perfume.Name; // اسم العطر
-            option.textContent = perfume.Name;
-            
-            // وضع سعر الفئة في data-price
-            option.setAttribute('data-price', groupData.price); 
-            optgroup.appendChild(option);
-        });
-        
-        selectElement.appendChild(optgroup);
-    });
-}
+  const removeFromCart = (id) => {
+    setCart(cart.filter(item => item.id !== id));
+  };
 
-// =====================
-// Initialize on DOM Load
-// =====================
-document.addEventListener("DOMContentLoaded", () => {
-    initializePreloader();
-    initializeNavigation();
-    initializeCustomizer();
-    initializeReviewsSwiper();
-    initializeBackToTop();
-    initializeAOS();
-    initializeSmoothScroll();
-});
+  const getTotal = () => {
+    return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  };
 
-// =====================
-// Preloader (No changes)
-// =====================
-function initializePreloader() {
-    // ... الكود الأصلي
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            const preloader = document.querySelector('.preloader');
-            if (preloader) {
-                preloader.classList.add('fade-out');
-                setTimeout(() => {
-                    preloader.style.display = 'none';
-                }, 500);
-            }
-        }, 1000);
-    });
-}
-
-// =====================
-// Navigation (No changes)
-// =====================
-function initializeNavigation() {
-    // ... الكود الأصلي
-    const hamburger = document.querySelector('.hamburger');
-    const navMenu = document.querySelector('.nav-menu');
-    const navLinks = document.querySelectorAll('.nav-link');
-    const navbar = document.querySelector('.navbar');
-    
-    // Mobile menu toggle
-    if (hamburger) {
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
+  const handleSubmitOrder = () => {
+    if (cart.length === 0) {
+      alert('⚠️ السلة فارغة!');
+      return;
     }
-    
-    // Close mobile menu on link click
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            hamburger?.classList.remove('active');
-            navMenu?.classList.remove('active');
-        });
-    });
-    
-    // Active link on scroll
-    window.addEventListener('scroll', () => {
-        // Navbar background on scroll
-        if (window.scrollY > 50) {
-            navbar?.classList.add('scrolled');
-        } else {
-            navbar?.classList.remove('scrolled');
+
+    if (!customerInfo.name || !customerInfo.phone || !customerInfo.address) {
+      alert('⚠️ برجاء إكمال جميع البيانات');
+      return;
+    }
+
+    const orderDetails = cart.map(item => 
+      `${item.name} (${item.size}ml) × ${item.quantity} = ${item.price * item.quantity} EGP`
+    ).join('\n');
+
+    const message = `
+🎯 *طلب جديد - VINDEX*
+━━━━━━━━━━━━━━━
+👤 *بيانات العميل*
+الاسم: ${customerInfo.name}
+الهاتف: ${customerInfo.phone}
+العنوان: ${customerInfo.address}
+
+📦 *تفاصيل الطلب*
+${orderDetails}
+
+💰 *الإجمالي: ${getTotal()} EGP*
+━━━━━━━━━━━━━━━
+    `.trim();
+
+    const whatsappUrl = `https://wa.me/201055741189?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+
+    setCart([]);
+    setCustomerInfo({ name: '', phone: '', address: '' });
+    setShowCart(false);
+    alert('✅ تم إرسال الطلب بنجاح!');
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-black">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-yellow-500 mx-auto mb-4"></div>
+          <p className="text-yellow-500 text-xl font-semibold">جاري التحميل...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white">
+      <style>{`
+        @keyframes slideIn {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
         }
-        
-        // Active section highlighting
-        let current = '';
-        const sections = document.querySelectorAll('section[id]');
-        
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop - 100;
-            if (window.scrollY >= sectionTop) {
-                current = section.getAttribute('id');
-            }
-        });
-        
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href').slice(1) === current) {
-                link.classList.add('active');
-            }
-        });
-    });
-}
-
-// =====================
-// Perfume Customizer
-// =====================
-function initializeCustomizer() {
-    // **🔥 NEW: Load perfumes dynamically first**
-    loadAndPopulatePerfumes(); 
-    
-    // Initialize step cards
-    initializeStepCards();
-    
-    // Initialize navigation buttons
-    initializeStepNavigation();
-    
-    // Initialize selects (We will modify this to use a separate listener function)
-    initializeSelectListeners();
-    
-    // Initialize checkout
-    initializeCheckout();
-    
-    // Initialize form submission
-    initializeOrderForm();
-
-    initializePerfumeFilters();
-}
-
-function initializeStepCards() {
-    // ... الكود الأصلي (Step 1 & 2 logic)
-    // Size cards
-    const sizeCards = document.querySelectorAll('.custom-step[data-step="1"] .option-card');
-    const sizeSelect = document.getElementById('perfume-size');
-    
-    sizeCards.forEach(card => {
-        card.addEventListener('click', () => {
-            sizeCards.forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            
-            const value = card.dataset.value;
-            // const price = card.dataset.price; // Price logic handled by select change
-            
-            if (sizeSelect) {
-                sizeSelect.value = value;
-                sizeSelect.dispatchEvent(new Event('change'));
-            }
-            
-            orderData.size = value;
-            updateOrderSummary();
-        });
-    });
-    
-    // Bottle cards
-    const bottleCards = document.querySelectorAll('.custom-step[data-step="2"] .option-card');
-    const bottleSelect = document.getElementById('bottle-type');
-    
-    bottleCards.forEach(card => {
-        card.addEventListener('click', () => {
-            bottleCards.forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            
-            const value = card.dataset.value;
-            // const price = card.dataset.price; // Price logic handled by select change
-            
-            if (bottleSelect) {
-                bottleSelect.value = value;
-                bottleSelect.dispatchEvent(new Event('change'));
-            }
-            
-            orderData.bottle = value;
-            updateOrderSummary();
-        });
-    });
-}
-
-function initializeStepNavigation() {
-    // ... الكود الأصلي
-    const prevBtn = document.querySelector('.btn-prev');
-    const nextBtn = document.querySelector('.btn-next');
-    
-    if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-            if (currentStep < totalSteps) {
-                // Validate current step
-                if (validateStep(currentStep)) {
-                    currentStep++;
-                    updateStepDisplay();
-                } else {
-                    showNotification('Please complete this step before proceeding', 'warning');
-                }
-            }
-        });
-    }
-    
-    if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-            if (currentStep > 1) {
-                currentStep--;
-                updateStepDisplay();
-            }
-        });
-    }
-}
-
-function validateStep(step) {
-    // ... الكود الأصلي
-    switch(step) {
-        case 1: return orderData.size !== null;
-        case 2: return orderData.bottle !== null;
-        case 3: return true; // Men's perfume is optional
-        case 4: return true; // Women's perfume is optional
-        default: return true;
-    }
-}
-
-function updateStepDisplay() {
-    // ... الكود الأصلي
-    // Update progress bar
-    const progressSteps = document.querySelectorAll('.progress-step');
-    progressSteps.forEach((step, index) => {
-        if (index + 1 < currentStep) {
-            step.classList.add('completed');
-            step.classList.remove('active');
-        } else if (index + 1 === currentStep) {
-            step.classList.add('active');
-            step.classList.remove('completed');
-        } else {
-            step.classList.remove('active', 'completed');
+        .perfume-card {
+          transition: all 0.3s ease;
         }
-    });
-    
-    // Update step content
-    const customSteps = document.querySelectorAll('.custom-step');
-    customSteps.forEach(step => {
-        if (parseInt(step.dataset.step) === currentStep) {
-            step.classList.add('step-active');
-        } else {
-            step.classList.remove('step-active');
+        .perfume-card:hover {
+          transform: translateY(-10px);
+          box-shadow: 0 20px 40px rgba(212, 175, 55, 0.3);
         }
-    });
-    
-    // Update navigation buttons
-    const prevBtn = document.querySelector('.btn-prev');
-    const nextBtn = document.querySelector('.btn-next');
-    
-    if (prevBtn) {
-        prevBtn.disabled = currentStep === 1;
-    }
-    
-    if (nextBtn) {
-        nextBtn.textContent = currentStep === totalSteps ? 'Complete' : 'Next';
-        if (currentStep === totalSteps) {
-            nextBtn.innerHTML = 'Complete <i class="fas fa-check"></i>';
-        } else {
-            nextBtn.innerHTML = 'Next <i class="fas fa-arrow-right"></i>';
+        .category-badge {
+          background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.1));
+          border: 1px solid #D4AF37;
         }
-    }
-}
-
-// **🔥 MODIFIED:** Renamed and updated the list of selects
-function initializeSelectListeners() {
-    const selects = [
-        'perfume-size',
-        'bottle-type',
-        // تم استبدال 'alcohol-type' بـ 'mens-perfume-select'
-        MENS_SELECT_ID, 
-        // تم استبدال 'packaging-select' بـ 'womens-perfume-select'
-        WOMENS_SELECT_ID
-    ];
-    
-    selects.forEach(id => {
-        const select = document.getElementById(id);
-        if (select) {
-            select.removeEventListener('change', updateOrderSummary); // لضمان عدم تكرار المستمع
-            select.addEventListener('change', updateOrderSummary);
+        .size-option {
+          transition: all 0.2s ease;
         }
-    });
-}
+        .size-option:hover:not(:disabled) {
+          background: linear-gradient(135deg, #D4AF37, #B8941F);
+          color: #0A0A0A;
+          transform: scale(1.05);
+        }
+      `}</style>
 
-function updateOrderSummary() {
-    const sizeSelect = document.getElementById('perfume-size');
-    const bottleSelect = document.getElementById('bottle-type');
-    
-    // **🔥 MODIFIED:** استخدام المتغيرات الجديدة/الصحيحة**
-    const menSelect = document.getElementById(MENS_SELECT_ID);
-    const womenSelect = document.getElementById(WOMENS_SELECT_ID);
-    
-    // **🔥 MODIFIED:** استخدام '?' للخيارات غير المحددة
-    // Get prices
-    // ملاحظة: الـ dataset.price الآن يتم سحبها من الخيار المختار في خطوات العطور
-    const sizePrice = parseInt(sizeSelect?.selectedOptions[0]?.dataset.price || 0);
-    const bottlePrice = parseInt(bottleSelect?.selectedOptions[0]?.dataset.price || 0);
-    const menPrice = parseInt(menSelect?.selectedOptions[0]?.dataset.price || 0);
-    const womenPrice = parseInt(womenSelect?.selectedOptions[0]?.dataset.price || 0);
-    
-    // Calculate total
-    const basePrice = 200; // Base price for 50ml
-    const total = basePrice + sizePrice + bottlePrice + menPrice + womenPrice;
-    
-    // Update order data
-    orderData.totalPrice = total;
-    // **🔥 MODIFIED:** تحديث الـ orderData بالقيم الصحيحة
-    orderData.size = sizeSelect?.value || null;
-    orderData.bottle = bottleSelect?.value || null;
-    orderData.menPerfume = menSelect?.value || null;
-    orderData.womenPerfume = womenSelect?.value || null;
-    
-    // Update display
-    document.getElementById('summary-size').textContent = orderData.size || 'Not selected';
-    document.getElementById('summary-bottle').textContent = orderData.bottle || 'Not selected';
-    // **🔥 MODIFIED:** تحديث أسماء الـ IDs في ملخص الطلب
-    document.getElementById('summary-alcohol').textContent = orderData.menPerfume || 'Not selected';
-    document.getElementById('summary-packaging').textContent = orderData.womenPerfume || 'Not selected';
-    document.getElementById('total-price').textContent = `${total} EGP`;
-    
-    // Enable checkout if all required steps are selected (Size, Bottle, AND at least ONE perfume)
-    const checkoutBtn = document.getElementById('checkout-button');
-    if (checkoutBtn) {
-        checkoutBtn.disabled = !orderData.size || !orderData.bottle || 
-                             (!orderData.menPerfume && !orderData.womenPerfume);
-    }
-}
+      <header className="sticky top-0 z-50 bg-black/95 backdrop-blur-lg border-b border-yellow-500/20">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center font-bold text-black">
+                V
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
+                  VINDEX
+                </h1>
+                <p className="text-xs text-gray-400">Luxury Perfumes</p>
+              </div>
+            </div>
+            
+            <button
+              onClick={() => setShowCart(!showCart)}
+              className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 px-6 py-3 rounded-full font-semibold text-black hover:scale-105 transition flex items-center gap-2"
+            >
+              <ShoppingCart size={20} />
+              السلة
+              {cart.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">
+                  {cart.length}
+                </span>
+              )}
+            </button>
+          </div>
+        </div>
+      </header>
 
-function initializeCheckout() {
-    // ... الكود الأصلي
-    const checkoutBtn = document.getElementById('checkout-button');
-    const customerForm = document.getElementById('customer-form');
-    const orderSummary = document.querySelector('.order-summary-card');
-    
-    if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', () => {
-            if (orderSummary) {
-                orderSummary.style.display = 'none';
-            }
-            if (customerForm) {
-                customerForm.style.display = 'block';
-                customerForm.scrollIntoView({ behavior: 'smooth' });
-            }
-        });
-    }
-}
+      <div className="container mx-auto px-4 py-6">
+        <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 border border-yellow-500/20">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <input
+                type="text"
+                placeholder="ابحث عن عطرك المفضل..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full bg-gray-900 border border-gray-700 rounded-xl px-12 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500"
+              />
+            </div>
 
-function initializeOrderForm() {
-    // ... الكود الأصلي
-    const form = document.getElementById('order-form');
-    
-    if (form) {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const submitBtn = document.getElementById('submit-order');
-            const originalText = submitBtn.innerHTML;
-            
-            // Get form data
-            const name = document.getElementById('customer-name').value;
-            const phone = document.getElementById('customer-phone').value;
-            const address = document.getElementById('customer-address').value;
-            
-            // Show loading state
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-            submitBtn.disabled = true;
-            
-            // Prepare WhatsApp message
-            const message = formatWhatsAppMessage({
-                name,
-                phone,
-                address,
-                ...orderData
-            });
-            
-            // // Send to WhatsApp
-            // const whatsappUrl = `https://wa.me/201055741189?text=${encodeURIComponent(message)}`;
-            // window.open(whatsappUrl, '_blank');
-            
-            // Try to send to Google Sheets
-           // داخل دالة initializeOrderForm عند الإرسال
-// ...
-// تجميع كل العطور المختارة في حقل واحد يسمى 'perfume'
-const selectedPerfumes = [];
-if (orderData.menPerfume) {
-    selectedPerfumes.push(`Men's: ${orderData.menPerfume}`);
-}
-if (orderData.womenPerfume) {
-    selectedPerfumes.push(`Women's: ${orderData.womenPerfume}`);
-}
+            <select
+              value={selectedGender}
+              onChange={(e) => setSelectedGender(e.target.value)}
+              className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500"
+            >
+              <option value="all">كل الأنواع</option>
+              <option value="men's">رجالي</option>
+              <option value="women's">نسائي</option>
+            </select>
 
-// بناء كائن البيانات للإرسال
-const payload = {
-    name,
-    phone,
-    address,
-    size: orderData.size,
-    bottle: orderData.bottle,
-    // 🔥 هذا هو التعديل الأساسي: دمج العطور وتسمية حقل السعر بشكل صحيح
-    perfume: selectedPerfumes.join(' | ') || 'No Perfume Selected', // دمج العطور
-    total: orderData.totalPrice // إعادة تسمية totalPrice إلى total
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500"
+            >
+              <option value="all">كل الفئات</option>
+              <option value="classic">Classic</option>
+              <option value="niche">Niche</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 pb-12">
+        {filteredPerfumes.length === 0 ? (
+          <div className="text-center py-20">
+            <Filter size={64} className="mx-auto text-gray-600 mb-4" />
+            <p className="text-xl text-gray-400">لا توجد عطور مطابقة للبحث</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredPerfumes.map((perfume) => (
+              <div
+                key={perfume.id}
+                className="perfume-card bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 border border-yellow-500/20"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="text-xl font-bold text-yellow-500 mb-1">
+                      {perfume.name}
+                    </h3>
+                    <div className="flex gap-2 flex-wrap">
+                      <span className="category-badge text-xs px-3 py-1 rounded-full">
+                        {perfume.category}
+                      </span>
+                      <span className="category-badge text-xs px-3 py-1 rounded-full">
+                        {perfume.type}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="flex items-center gap-1 text-sm text-gray-400">
+                      <Package size={16} />
+                      <span>{perfume.stock} متوفر</span>
+                    </div>
+                  </div>
+                </div>
+
+                {perfume.description && (
+                  <p className="text-gray-400 text-sm mb-4 line-clamp-2">
+                    {perfume.description}
+                  </p>
+                )}
+
+                {perfume.notes && (
+                  <div className="mb-4 p-3 bg-black/30 rounded-lg">
+                    <div className="flex items-start gap-2">
+                      <Info size={16} className="text-yellow-500 mt-0.5" />
+                      <p className="text-xs text-gray-400">{perfume.notes}</p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-2">
+                  <p className="text-sm font-semibold text-gray-300 mb-2">اختر الحجم:</p>
+                  
+                  {perfume.price30ml > 0 && (
+                    <button
+                      onClick={() => addToCart(perfume, 30)}
+                      disabled={perfume.stock <= 0}
+                      className="size-option w-full bg-gray-700/50 rounded-lg p-3 flex justify-between items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <span className="font-semibold">30ml</span>
+                      <span className="text-yellow-500 font-bold">{perfume.price30ml} EGP</span>
+                    </button>
+                  )}
+                  
+                  {perfume.price50ml > 0 && (
+                    <button
+                      onClick={() => addToCart(perfume, 50)}
+                      disabled={perfume.stock <= 0}
+                      className="size-option w-full bg-gray-700/50 rounded-lg p-3 flex justify-between items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <span className="font-semibold">50ml</span>
+                      <span className="text-yellow-500 font-bold">{perfume.price50ml} EGP</span>
+                    </button>
+                  )}
+                  
+                  {perfume.price100ml > 0 && (
+                    <button
+                      onClick={() => addToCart(perfume, 100)}
+                      disabled={perfume.stock <= 0}
+                      className="size-option w-full bg-gray-700/50 rounded-lg p-3 flex justify-between items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <span className="font-semibold">100ml</span>
+                      <span className="text-yellow-500 font-bold">{perfume.price100ml} EGP</span>
+                    </button>
+                  )}
+                </div>
+
+                {perfume.stock <= 0 && (
+                  <div className="mt-3 bg-red-500/20 border border-red-500 rounded-lg p-2 text-center text-sm text-red-400">
+                    غير متوفر حالياً
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {showCart && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50" onClick={() => setShowCart(false)}>
+          <div
+            className="absolute right-0 top-0 h-full w-full max-w-md bg-gray-900 shadow-2xl overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-yellow-500">سلة المشتريات</h2>
+                <button
+                  onClick={() => setShowCart(false)}
+                  className="text-gray-400 hover:text-white text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+
+              {cart.length === 0 ? (
+                <div className="text-center py-12">
+                  <ShoppingCart size={64} className="mx-auto text-gray-600 mb-4" />
+                  <p className="text-gray-400">السلة فارغة</p>
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-4 mb-6">
+                    {cart.map((item) => (
+                      <div key={item.id} className="bg-gray-800 rounded-xl p-4">
+                        <div className="flex justify-between items-start mb-3">
+                          <div>
+                            <h4 className="font-semibold text-yellow-500">{item.name}</h4>
+                            <p className="text-sm text-gray-400">{item.size}ml</p>
+                          </div>
+                          <button
+                            onClick={() => removeFromCart(item.id)}
+                            className="text-red-400 hover:text-red-300"
+                          >
+                            ×
+                          </button>
+                        </div>
+                        
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center gap-3">
+                            <button
+                              onClick={() => updateQuantity(item.id, -1)}
+                              className="w-8 h-8 bg-gray-700 rounded-lg hover:bg-gray-600"
+                            >
+                              -
+                            </button>
+                            <span className="font-semibold">{item.quantity}</span>
+                            <button
+                              onClick={() => updateQuantity(item.id, 1)}
+                              className="w-8 h-8 bg-gray-700 rounded-lg hover:bg-gray-600"
+                            >
+                              +
+                            </button>
+                          </div>
+                          <span className="text-yellow-500 font-bold">
+                            {item.price * item.quantity} EGP
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500 rounded-xl p-4 mb-6">
+                    <div className="flex justify-between items-center text-xl font-bold">
+                      <span>الإجمالي:</span>
+                      <span className="text-yellow-500">{getTotal()} EGP</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">الاسم الكامل</label>
+                      <input
+                        type="text"
+                        value={customerInfo.name}
+                        onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})}
+                        className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">رقم الهاتف</label>
+                      <input
+                        type="tel"
+                        value={customerInfo.phone}
+                        onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})}
+                        className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">عنوان التوصيل</label>
+                      <textarea
+                        value={customerInfo.address}
+                        onChange={(e) => setCustomerInfo({...customerInfo, address: e.target.value})}
+                        rows={3}
+                        className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500 resize-none"
+                      />
+                    </div>
+                    
+                    <button
+                      onClick={handleSubmitOrder}
+                      className="w-full bg-gradient-to-r from-green-500 to-green-600 py-4 rounded-xl font-bold text-white hover:scale-105 transition flex items-center justify-center gap-2"
+                    >
+                      <ShoppingCart size={20} />
+                      إرسال الطلب عبر WhatsApp
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
-
-// Try to send to Google Sheets
-try {
-    await sendToGoogleSheets(payload); // ✅ إرسال الكائن الجديد
-    // ...
-                
-                showNotification('Order sent successfully! 🎉', 'success');
-                form.reset();
-                resetCustomizer();
-            } catch (error) {
-                console.error('Error sending to sheets:', error);
-                showNotification('Order sent via WhatsApp!', 'success');
-            }
-            
-            // Reset button
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-        });
-    }
-}
-
-function formatWhatsAppMessage(data) {
-    // ... الكود الأصلي (No changes)
-    const items = [];
-    
-    if (data.size) items.push(`📏 Size: ${data.size}`);
-    if (data.bottle) items.push(`🍾 Bottle: ${data.bottle}`);
-    if (data.menPerfume) items.push(`👨 Men's: ${data.menPerfume}`);
-    if (data.womenPerfume) items.push(`👩 Women's: ${data.womenPerfume}`);
-    
-    return `🎯 *NEW ORDER - VINDEX*
-━━━━━━━━━━━━━━━
-👤 *Customer Details*
-Name: ${data.name}
-Phone: ${data.phone}
-Address: ${data.address}
-
-📦 *Order Details*
-${items.join('\n')}
-
-💰 *Total: ${data.totalPrice} EGP*
-━━━━━━━━━━━━━━━`;
-}
-
-async function sendToGoogleSheets(data) {
-    // ... الكود الأصلي (No changes)
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbz_ZF0iFigVac8FBUbP4RpByZ0l77kPqlRCpWtau_-ntduVfs6zAyWs5CJjuIsboH0Umg/exec'; // Replace with actual URL
-    
-    const response = await fetch(scriptURL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-    });
-    
-    return response;
-}
-
-function resetCustomizer() {
-    // ... الكود الأصلي
-    // Reset all selections
-    orderData = {
-        size: null,
-        bottle: null,
-        menPerfume: null,
-        womenPerfume: null,
-        totalPrice: 0
-    };
-    
-    // Reset UI
-    currentStep = 1;
-    updateStepDisplay();
-    
-    document.querySelectorAll('.option-card').forEach(card => {
-        card.classList.remove('selected');
-    });
-    
-    document.querySelectorAll('select').forEach(select => {
-        select.value = '';
-    });
-    
-    updateOrderSummary();
-    
-    // Hide forms
-    document.getElementById('customer-form').style.display = 'none';
-    document.querySelector('.order-summary-card').style.display = 'block';
-}
-
-// =====================
-// Reviews Swiper (No changes)
-// =====================
-function initializeReviewsSwiper() {
-    // ... الكود الأصلي
-    if (typeof Swiper !== 'undefined') {
-        new Swiper('.reviews-swiper', {
-            slidesPerView: 1,
-            spaceBetween: 30,
-            loop: true,
-            autoplay: {
-                delay: 5000,
-                disableOnInteraction: false,
-            },
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
-            breakpoints: {
-                640: {
-                    slidesPerView: 2,
-                },
-                1024: {
-                    slidesPerView: 3,
-                },
-            },
-        });
-    }
-}
-
-// =====================
-// Back to Top Button (No changes)
-// =====================
-function initializeBackToTop() {
-    // ... الكود الأصلي
-    const backToTopBtn = document.getElementById('backToTop');
-    
-    if (backToTopBtn) {
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                backToTopBtn.classList.add('show');
-            } else {
-                backToTopBtn.classList.remove('show');
-            }
-        });
-        
-        backToTopBtn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-    }
-}
-
-// =====================
-// Initialize AOS (No changes)
-// =====================
-function initializeAOS() {
-    // ... الكود الأصلي
-    if (typeof AOS !== 'undefined') {
-        AOS.init({
-            duration: 800,
-            easing: 'ease-in-out',
-            once: true,
-            offset: 100,
-        });
-    }
-}
-
-// =====================
-// Smooth Scroll (No changes)
-// =====================
-function initializeSmoothScroll() {
-    // ... الكود الأصلي
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            
-            if (target) {
-                const offsetTop = target.offsetTop - 80; // Account for fixed header
-                
-                window.scrollTo({
-                    top: offsetTop,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-}
-
-// =====================
-// Notification System (No changes)
-// =====================
-function showNotification(message, type = 'info') {
-    // ... الكود الأصلي
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.innerHTML = `
-      <div class="notification-content">
-        <i class="fas ${getNotificationIcon(type)}"></i>
-        <span>${message}</span>
-      </div>
-    `;
-    
-    // Add styles
-    const styles = `
-      .notification {
-        position: fixed;
-        top: 100px;
-        right: 20px;
-        background: var(--black-secondary);
-        color: var(--text-light);
-        padding: 1rem 1.5rem;
-        border-radius: 10px;
-        box-shadow: var(--shadow-lg);
-        z-index: 9999;
-        animation: slideIn 0.3s ease;
-        border-left: 4px solid;
-        max-width: 300px;
-      }
-      
-      .notification-success {
-        border-color: #4CAF50;
-      }
-      
-      .notification-warning {
-        border-color: var(--gold-primary);
-      }
-      
-      .notification-error {
-        border-color: #f44336;
-      }
-      
-      .notification-content {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-      }
-      
-      @keyframes slideIn {
-        from {
-          transform: translateX(100%);
-          opacity: 0;
-        }
-        to {
-          transform: translateX(0);
-          opacity: 1;
-        }
-      }
-    `;
-    
-    // Add styles if not already added
-    if (!document.getElementById('notification-styles')) {
-        const styleSheet = document.createElement('style');
-        styleSheet.id = 'notification-styles';
-        styleSheet.textContent = styles;
-        document.head.appendChild(styleSheet);
-    }
-    
-    // Add to DOM
-    document.body.appendChild(notification);
-    
-    // Remove after 3 seconds
-    setTimeout(() => {
-        // Simple slideOut animation removal (assuming CSS handles slideOut)
-        const slideOutKeyframes = `@keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }`;
-        const tempStyle = document.createElement('style');
-        tempStyle.textContent = slideOutKeyframes;
-        document.head.appendChild(tempStyle);
-        
-        notification.style.animation = 'slideOut 0.3s ease';
-        
-        setTimeout(() => {
-            notification.remove();
-            tempStyle.remove();
-        }, 300);
-    }, 3000);
-}
-
-function getNotificationIcon(type) {
-    // ... الكود الأصلي
-    switch(type) {
-        case 'success': return 'fa-check-circle';
-        case 'warning': return 'fa-exclamation-triangle';
-        case 'error': return 'fa-times-circle';
-        default: return 'fa-info-circle';
-    }
-}
-
-// =====================
-// Performance Optimization (No changes)
-// =====================
-// Debounce function for scroll events
-function debounce(func, wait) {
-    // ... الكود الأصلي
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-// Optimize scroll events
-window.addEventListener('scroll', debounce(() => {
-    // Handle any scroll-based animations or updates
-}, 10));
-
-// =====================
-// Lazy Loading Images (No changes)
-// =====================
-if ('IntersectionObserver' in window) {
-    // ... الكود الأصلي
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src || img.src;
-                img.classList.add('loaded');
-                observer.unobserve(img);
-            }
-        });
-    });
-    
-    document.querySelectorAll('img[data-src]').forEach(img => {
-        imageObserver.observe(img);
-    });
-}
-
-// =====================
-// Perfume Filters (Modified to work with dynamic Optgroups)
-// =====================
-function initializePerfumeFilters() {
-    const filterTabs = document.querySelectorAll('.filter-tab');
-    
-    filterTabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            const filter = this.dataset.filter;
-            const parent = this.closest('.custom-step');
-            const select = parent.querySelector('.perfume-select');
-            
-            // Update active tab
-            parent.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Filter options (Optgroups)
-            if (select) {
-                const optgroups = select.querySelectorAll('optgroup');
-                
-                // Hide all options by default
-                optgroups.forEach(grp => grp.style.display = 'none');
-
-                if (filter === 'all') {
-                    // Show all optgroups
-                    optgroups.forEach(grp => grp.style.display = '');
-                } else if (filter === 'classic') {
-                    // Show only optgroups labeled 'Classic'
-                    optgroups.forEach(grp => {
-                        if (grp.label.includes('Classic')) {
-                            grp.style.display = '';
-                        }
-                    });
-                } else if (filter === 'niche') {
-                    // Show only optgroups labeled 'Niche'
-                    optgroups.forEach(grp => {
-                        if (grp.label.includes('Niche')) {
-                            grp.style.display = '';
-                        }
-                    });
-                }
-            }
-        });
-    });
-}
+export default VindexPerfumeSystem;
