@@ -1,1417 +1,533 @@
-let currentStep = 1;
-const totalSteps = 4;
-let orderData = {
-  size: null,
-  bottle: null,
-  menPerfume: null,
-  womenPerfume: null,
-  totalPrice: 0
-    size: null,
-    bottle: null,
-    menPerfume: null,
-    womenPerfume: null,
-    totalPrice: 0
-};
+// ===================================
+// VINDEX Luxury Perfumes - JavaScript
+// ===================================
 
-// =====================
-// Google Sheet Integration (New/Modified Section)
-// =====================
-
-// **⚠️ IMPORTANT: REPLACE THIS URL**
-// هذا هو الرابط الذي ستحصل عليه بعد نشر جدول بيانات جوجل الخاص بك كـ JSON API (Web App)
-const PERFUME_DATA_URL = 'https://script.google.com/macros/s/AKfycbyzQW-uc8aENAyheRcRsQ24negp-LUuoPiiW687mcrlYnskdQ4F8nb6MCeMDNnDdGw_/exec'; 
-
-// IDs for the perfume selects in HTML
-const MENS_SELECT_ID = 'mens-perfume-select';
-const WOMENS_SELECT_ID = 'womens-perfume-select';
-
-// Function to fetch data from Google Sheet and populate selects
-async function loadAndPopulatePerfumes() {
-    console.log("Attempting to load perfume data...");
-    try {
-        // إذا كنت تستخدم Google Apps Script، قد تحتاج لـ 'no-cache' لتحديث البيانات بسرعة
-        const response = await fetch(PERFUME_DATA_URL, { cache: 'no-cache' }); 
-        
-        // يجب أن تعود البيانات في شكل مصفوفة من الكائنات (Array of Objects)
-        const allPerfumes = await response.json(); 
-
-        // تأكد من أن البيانات هي مصفوفة وتحتوي على عناصر
-        if (!Array.isArray(allPerfumes) || allPerfumes.length === 0) {
-            console.error("Perfume data is empty or invalid.");
-            showNotification('Error loading perfumes. Please contact support.', 'error');
-            return;
-        }
-
-        // فلترة العطور حسب النوع (افترض أن لديك عمود اسمه 'Type' في الشيت)
-        const mensPerfumes = allPerfumes.filter(p => p.Type && p.Type.toLowerCase() === "men's");
-        const womensPerfumes = allPerfumes.filter(p => p.Type && p.Type.toLowerCase() === "women's");
-
-        // ملء القوائم المنسدلة
-        populateSelect(MENS_SELECT_ID, mensPerfumes);
-        populateSelect(WOMENS_SELECT_ID, womensPerfumes);
-        
-        // إعادة تهيئة المستمعات بعد ملء القوائم
-        initializeSelectListeners();
-        
-        console.log("Perfume data loaded and selectors populated successfully.");
-
-    } catch (error) {
-        console.error("Failed to load perfume data:", error);
-        showNotification('Failed to load perfume list. Check your connection.', 'error');
-    }
-}
-
-// Function to populate a single select element
-function populateSelect(selectId, perfumes) {
-    const selectElement = document.getElementById(selectId);
-    if (!selectElement) return;
-
-    // البدء بخيار فارغ
-    selectElement.innerHTML = '<option value="">Choose your perfume</option>';
-
-    // تجميع العطور حسب الفئة (Category: Classic, Niche)
-    const groupedPerfumes = perfumes.reduce((acc, perfume) => {
-        // يجب أن تتطابق أسماء الأعمدة مع أسماء الأعمدة في Google Sheet
-        const category = perfume.Category; 
-        const price = parseInt(perfume.Price || 0);
-        
-        // يجب أن تكون الفئة والسعر موجودين
-        if (!category || isNaN(price)) return acc; 
-
-        if (!acc[category]) {
-            acc[category] = {
-                price: price,
-                items: []
-            };
-        }
-        acc[category].items.push(perfume);
-        return acc;
-    }, {});
-    
-    // ترتيب أسماء الفئات لتظهر بالترتيب (مثل: Classic أولاً ثم Niche)
-    const sortedCategories = Object.keys(groupedPerfumes).sort((a, b) => {
-        // ترتيب تصاعدي حسب السعر
-        return groupedPerfumes[a].price - groupedPerfumes[b].price;
-    });
-
-    // إضافة مجموعات الخيارات (Optgroups)
-    sortedCategories.forEach(category => {
-        const groupData = groupedPerfumes[category];
-        const optgroup = document.createElement('optgroup');
-        
-        // بناء تسمية المجموعة (Optgroup Label)
-        optgroup.label = `🔹 ${category} Collection (+${groupData.price} EGP)`; 
-        
-        groupData.items.forEach(perfume => {
-            const option = document.createElement('option');
-            option.value = perfume.Name; // اسم العطر
-            option.textContent = perfume.Name;
-            
-            // وضع سعر الفئة في data-price
-            option.setAttribute('data-price', groupData.price); 
-            optgroup.appendChild(option);
-        });
-        
-        selectElement.appendChild(optgroup);
-    });
-}
-
-// =====================
-// Initialize on DOM Load
-// =====================
-document.addEventListener("DOMContentLoaded", () => {
-  initializePreloader();
-  initializeNavigation();
-  initializeCustomizer();
-  initializeReviewsSwiper();
-  initializeBackToTop();
-  initializeAOS();
-  initializeSmoothScroll();
-    initializePreloader();
-    initializeNavigation();
-    initializeCustomizer();
-    initializeReviewsSwiper();
-    initializeBackToTop();
-    initializeAOS();
-    initializeSmoothScroll();
-});
-
-// =====================
-// Preloader
-// Preloader (No changes)
-// =====================
-function initializePreloader() {
+document.addEventListener('DOMContentLoaded', () => {
+  // ===================================
+  // PRELOADER
+  // ===================================
+  const preloader = document.getElementById('preloader');
+  
   window.addEventListener('load', () => {
     setTimeout(() => {
-      const preloader = document.querySelector('.preloader');
-      if (preloader) {
-        preloader.classList.add('fade-out');
-    // ... الكود الأصلي
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-          preloader.style.display = 'none';
-        }, 500);
-      }
-    }, 1000);
+      preloader.classList.add('hidden');
+    }, 1500);
   });
-            const preloader = document.querySelector('.preloader');
-            if (preloader) {
-                preloader.classList.add('fade-out');
-                setTimeout(() => {
-                    preloader.style.display = 'none';
-                }, 500);
-            }
-        }, 1000);
-    });
-}
 
-// =====================
-// Navigation
-// Navigation (No changes)
-// =====================
-function initializeNavigation() {
-  const hamburger = document.querySelector('.hamburger');
-  const navMenu = document.querySelector('.nav-menu');
+  // ===================================
+  // NAVIGATION
+  // ===================================
+  const nav = document.getElementById('nav');
+  const navToggle = document.getElementById('nav-toggle');
+  const navMenu = document.getElementById('nav-menu');
   const navLinks = document.querySelectorAll('.nav-link');
-  const navbar = document.querySelector('.navbar');
-  
+
+  // Scroll effect
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 100) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  });
+
   // Mobile menu toggle
-  if (hamburger) {
-    hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('active');
-      navMenu.classList.toggle('active');
-    });
-  }
-  
-  // Close mobile menu on link click
+  navToggle.addEventListener('click', () => {
+    navToggle.classList.toggle('active');
+    navMenu.classList.toggle('active');
+  });
+
+  // Close menu on link click
   navLinks.forEach(link => {
     link.addEventListener('click', () => {
-      hamburger?.classList.remove('active');
-      navMenu?.classList.remove('active');
+      navToggle.classList.remove('active');
+      navMenu.classList.remove('active');
     });
   });
-  
-  // Active link on scroll
-  window.addEventListener('scroll', () => {
-    // Navbar background on scroll
-    if (window.scrollY > 50) {
-      navbar?.classList.add('scrolled');
-    } else {
-      navbar?.classList.remove('scrolled');
-    }
-    // ... الكود الأصلي
-    const hamburger = document.querySelector('.hamburger');
-    const navMenu = document.querySelector('.nav-menu');
-    const navLinks = document.querySelectorAll('.nav-link');
-    const navbar = document.querySelector('.navbar');
 
-    // Active section highlighting
-    let current = '';
-    const sections = document.querySelectorAll('section[id]');
-    // Mobile menu toggle
-    if (hamburger) {
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
-    }
-
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop - 100;
-      if (window.scrollY >= sectionTop) {
-        current = section.getAttribute('id');
-      }
-    // Close mobile menu on link click
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            hamburger?.classList.remove('active');
-            navMenu?.classList.remove('active');
-        });
-    });
-
-    navLinks.forEach(link => {
-      link.classList.remove('active');
-      if (link.getAttribute('href').slice(1) === current) {
-        link.classList.add('active');
-      }
-    // Active link on scroll
-    window.addEventListener('scroll', () => {
-        // Navbar background on scroll
-        if (window.scrollY > 50) {
-            navbar?.classList.add('scrolled');
-        } else {
-            navbar?.classList.remove('scrolled');
-        }
-        
-        // Active section highlighting
-        let current = '';
-        const sections = document.querySelectorAll('section[id]');
-        
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop - 100;
-            if (window.scrollY >= sectionTop) {
-                current = section.getAttribute('id');
-            }
-        });
-        
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href').slice(1) === current) {
-                link.classList.add('active');
-            }
-        });
-    });
-  });
-}
-
-// =====================
-// Perfume Customizer
-// =====================
-function initializeCustomizer() {
-  // Initialize step cards
-  initializeStepCards();
-  
-  // Initialize navigation buttons
-  initializeStepNavigation();
-  
-  // Initialize selects
-  initializeSelects();
-  
-  // Initialize checkout
-  initializeCheckout();
-  
-  // Initialize form submission
-  initializeOrderForm();
-
-  initializePerfumeFilters();
-    // **🔥 NEW: Load perfumes dynamically first**
-    loadAndPopulatePerfumes(); 
-    
-    // Initialize step cards
-    initializeStepCards();
-    
-    // Initialize navigation buttons
-    initializeStepNavigation();
-    
-    // Initialize selects (We will modify this to use a separate listener function)
-    initializeSelectListeners();
-    
-    // Initialize checkout
-    initializeCheckout();
-    
-    // Initialize form submission
-    initializeOrderForm();
-
-    initializePerfumeFilters();
-}
-
-function initializeStepCards() {
-  // Size cards
-  const sizeCards = document.querySelectorAll('.custom-step[data-step="1"] .option-card');
-  const sizeSelect = document.getElementById('perfume-size');
-  
-  sizeCards.forEach(card => {
-    card.addEventListener('click', () => {
-      sizeCards.forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      
-      const value = card.dataset.value;
-      const price = card.dataset.price;
-      
-      if (sizeSelect) {
-        sizeSelect.value = value;
-        sizeSelect.dispatchEvent(new Event('change'));
-      }
-      
-      orderData.size = value;
-      updateOrderSummary();
-    // ... الكود الأصلي (Step 1 & 2 logic)
-    // Size cards
-    const sizeCards = document.querySelectorAll('.custom-step[data-step="1"] .option-card');
-    const sizeSelect = document.getElementById('perfume-size');
-    
-    sizeCards.forEach(card => {
-        card.addEventListener('click', () => {
-            sizeCards.forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            
-            const value = card.dataset.value;
-            // const price = card.dataset.price; // Price logic handled by select change
-            
-            if (sizeSelect) {
-                sizeSelect.value = value;
-                sizeSelect.dispatchEvent(new Event('change'));
-            }
-            
-            orderData.size = value;
-            updateOrderSummary();
-        });
-    });
-  });
-  
-  // Bottle cards
-  const bottleCards = document.querySelectorAll('.custom-step[data-step="2"] .option-card');
-  const bottleSelect = document.getElementById('bottle-type');
-  
-  bottleCards.forEach(card => {
-    card.addEventListener('click', () => {
-      bottleCards.forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      
-      const value = card.dataset.value;
-      const price = card.dataset.price;
-      
-      if (bottleSelect) {
-        bottleSelect.value = value;
-        bottleSelect.dispatchEvent(new Event('change'));
-      }
-      
-      orderData.bottle = value;
-      updateOrderSummary();
-    
-    // Bottle cards
-    const bottleCards = document.querySelectorAll('.custom-step[data-step="2"] .option-card');
-    const bottleSelect = document.getElementById('bottle-type');
-    
-    bottleCards.forEach(card => {
-        card.addEventListener('click', () => {
-            bottleCards.forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            
-            const value = card.dataset.value;
-            // const price = card.dataset.price; // Price logic handled by select change
-            
-            if (bottleSelect) {
-                bottleSelect.value = value;
-                bottleSelect.dispatchEvent(new Event('change'));
-            }
-            
-            orderData.bottle = value;
-            updateOrderSummary();
-        });
-    });
-  });
-}
-
-function initializeStepNavigation() {
-  const prevBtn = document.querySelector('.btn-prev');
-  const nextBtn = document.querySelector('.btn-next');
-  
-  if (nextBtn) {
-    nextBtn.addEventListener('click', () => {
-      if (currentStep < totalSteps) {
-        // Validate current step
-        if (validateStep(currentStep)) {
-          currentStep++;
-          updateStepDisplay();
-        } else {
-          showNotification('Please complete this step before proceeding', 'warning');
-        }
-      }
-    });
-  }
-  
-  if (prevBtn) {
-    prevBtn.addEventListener('click', () => {
-      if (currentStep > 1) {
-        currentStep--;
-        updateStepDisplay();
-      }
-    });
-  }
-    // ... الكود الأصلي
-    const prevBtn = document.querySelector('.btn-prev');
-    const nextBtn = document.querySelector('.btn-next');
-    
-    if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-            if (currentStep < totalSteps) {
-                // Validate current step
-                if (validateStep(currentStep)) {
-                    currentStep++;
-                    updateStepDisplay();
-                } else {
-                    showNotification('Please complete this step before proceeding', 'warning');
-                }
-            }
-        });
-    }
-    
-    if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-            if (currentStep > 1) {
-                currentStep--;
-                updateStepDisplay();
-            }
-        });
-    }
-}
-
-function validateStep(step) {
-  switch(step) {
-    case 1: return orderData.size !== null;
-    case 2: return orderData.bottle !== null;
-    case 3: return true; // Men's perfume is optional
-    case 4: return true; // Women's perfume is optional
-    default: return true;
-  }
-    // ... الكود الأصلي
-    switch(step) {
-        case 1: return orderData.size !== null;
-        case 2: return orderData.bottle !== null;
-        case 3: return true; // Men's perfume is optional
-        case 4: return true; // Women's perfume is optional
-        default: return true;
-    }
-}
-
-function updateStepDisplay() {
-  // Update progress bar
-  const progressSteps = document.querySelectorAll('.progress-step');
-  progressSteps.forEach((step, index) => {
-    if (index + 1 < currentStep) {
-      step.classList.add('completed');
-      step.classList.remove('active');
-    } else if (index + 1 === currentStep) {
-      step.classList.add('active');
-      step.classList.remove('completed');
-    } else {
-      step.classList.remove('active', 'completed');
-    }
-  });
-  
-  // Update step content
-  const customSteps = document.querySelectorAll('.custom-step');
-  customSteps.forEach(step => {
-    if (parseInt(step.dataset.step) === currentStep) {
-      step.classList.add('step-active');
-    } else {
-      step.classList.remove('step-active');
-    // ... الكود الأصلي
-    // Update progress bar
-    const progressSteps = document.querySelectorAll('.progress-step');
-    progressSteps.forEach((step, index) => {
-        if (index + 1 < currentStep) {
-            step.classList.add('completed');
-            step.classList.remove('active');
-        } else if (index + 1 === currentStep) {
-            step.classList.add('active');
-            step.classList.remove('completed');
-        } else {
-            step.classList.remove('active', 'completed');
-        }
-    });
-    
-    // Update step content
-    const customSteps = document.querySelectorAll('.custom-step');
-    customSteps.forEach(step => {
-        if (parseInt(step.dataset.step) === currentStep) {
-            step.classList.add('step-active');
-        } else {
-            step.classList.remove('step-active');
-        }
-    });
-    
-    // Update navigation buttons
-    const prevBtn = document.querySelector('.btn-prev');
-    const nextBtn = document.querySelector('.btn-next');
-    
-    if (prevBtn) {
-        prevBtn.disabled = currentStep === 1;
-    }
-  });
-  
-  // Update navigation buttons
-  const prevBtn = document.querySelector('.btn-prev');
-  const nextBtn = document.querySelector('.btn-next');
-  
-  if (prevBtn) {
-    prevBtn.disabled = currentStep === 1;
-  }
-  
-  if (nextBtn) {
-    nextBtn.textContent = currentStep === totalSteps ? 'Complete' : 'Next';
-    if (currentStep === totalSteps) {
-      nextBtn.innerHTML = 'Complete <i class="fas fa-check"></i>';
-    } else {
-      nextBtn.innerHTML = 'Next <i class="fas fa-arrow-right"></i>';
-    
-    if (nextBtn) {
-        nextBtn.textContent = currentStep === totalSteps ? 'Complete' : 'Next';
-        if (currentStep === totalSteps) {
-            nextBtn.innerHTML = 'Complete <i class="fas fa-check"></i>';
-        } else {
-            nextBtn.innerHTML = 'Next <i class="fas fa-arrow-right"></i>';
-        }
-    }
-  }
-}
-
-function initializeSelects() {
-  const selects = [
-    'perfume-size',
-    'bottle-type',
-    'alcohol-type',
-    'packaging-select'
-  ];
-  
-  selects.forEach(id => {
-    const select = document.getElementById(id);
-    if (select) {
-      select.addEventListener('change', updateOrderSummary);
-    }
-  });
-// **🔥 MODIFIED:** Renamed and updated the list of selects
-function initializeSelectListeners() {
-    const selects = [
-        'perfume-size',
-        'bottle-type',
-        // تم استبدال 'alcohol-type' بـ 'mens-perfume-select'
-        MENS_SELECT_ID, 
-        // تم استبدال 'packaging-select' بـ 'womens-perfume-select'
-        WOMENS_SELECT_ID
-    ];
-    
-    selects.forEach(id => {
-        const select = document.getElementById(id);
-        if (select) {
-            select.removeEventListener('change', updateOrderSummary); // لضمان عدم تكرار المستمع
-            select.addEventListener('change', updateOrderSummary);
-        }
-    });
-}
-
-function updateOrderSummary() {
-  const sizeSelect = document.getElementById('perfume-size');
-  const bottleSelect = document.getElementById('bottle-type');
-  const menSelect = document.getElementById('alcohol-type');
-  const womenSelect = document.getElementById('packaging-select');
-  
-  // Get prices
-  const sizePrice = parseInt(sizeSelect?.selectedOptions[0]?.dataset.price || 0);
-  const bottlePrice = parseInt(bottleSelect?.selectedOptions[0]?.dataset.price || 0);
-  const menPrice = parseInt(menSelect?.selectedOptions[0]?.dataset.price || 0);
-  const womenPrice = parseInt(womenSelect?.selectedOptions[0]?.dataset.price || 0);
-  
-  // Calculate total
-  const basePrice = 200; // Base price for 50ml
-  const total = basePrice + sizePrice + bottlePrice + menPrice + womenPrice;
-  
-  // Update order data
-  orderData.totalPrice = total;
-  orderData.menPerfume = menSelect?.value || null;
-  orderData.womenPerfume = womenSelect?.value || null;
-  
-  // Update display
-  document.getElementById('summary-size').textContent = sizeSelect?.value || 'Not selected';
-  document.getElementById('summary-bottle').textContent = bottleSelect?.value || 'Not selected';
-  document.getElementById('summary-alcohol').textContent = menSelect?.value || 'Not selected';
-  document.getElementById('summary-packaging').textContent = womenSelect?.value || 'Not selected';
-  document.getElementById('total-price').textContent = `${total} EGP`;
-  
-  // Enable checkout if at least one perfume is selected
-  const checkoutBtn = document.getElementById('checkout-button');
-  if (checkoutBtn) {
-    checkoutBtn.disabled = !sizeSelect?.value || !bottleSelect?.value || 
-                          (!menSelect?.value && !womenSelect?.value);
-  }
-    const sizeSelect = document.getElementById('perfume-size');
-    const bottleSelect = document.getElementById('bottle-type');
-    
-    // **🔥 MODIFIED:** استخدام المتغيرات الجديدة/الصحيحة**
-    const menSelect = document.getElementById(MENS_SELECT_ID);
-    const womenSelect = document.getElementById(WOMENS_SELECT_ID);
-    
-    // **🔥 MODIFIED:** استخدام '?' للخيارات غير المحددة
-    // Get prices
-    // ملاحظة: الـ dataset.price الآن يتم سحبها من الخيار المختار في خطوات العطور
-    const sizePrice = parseInt(sizeSelect?.selectedOptions[0]?.dataset.price || 0);
-    const bottlePrice = parseInt(bottleSelect?.selectedOptions[0]?.dataset.price || 0);
-    const menPrice = parseInt(menSelect?.selectedOptions[0]?.dataset.price || 0);
-    const womenPrice = parseInt(womenSelect?.selectedOptions[0]?.dataset.price || 0);
-    
-    // Calculate total
-    const basePrice = 200; // Base price for 50ml
-    const total = basePrice + sizePrice + bottlePrice + menPrice + womenPrice;
-    
-    // Update order data
-    orderData.totalPrice = total;
-    // **🔥 MODIFIED:** تحديث الـ orderData بالقيم الصحيحة
-    orderData.size = sizeSelect?.value || null;
-    orderData.bottle = bottleSelect?.value || null;
-    orderData.menPerfume = menSelect?.value || null;
-    orderData.womenPerfume = womenSelect?.value || null;
-    
-    // Update display
-    document.getElementById('summary-size').textContent = orderData.size || 'Not selected';
-    document.getElementById('summary-bottle').textContent = orderData.bottle || 'Not selected';
-    // **🔥 MODIFIED:** تحديث أسماء الـ IDs في ملخص الطلب
-    document.getElementById('summary-alcohol').textContent = orderData.menPerfume || 'Not selected';
-    document.getElementById('summary-packaging').textContent = orderData.womenPerfume || 'Not selected';
-    document.getElementById('total-price').textContent = `${total} EGP`;
-    
-    // Enable checkout if all required steps are selected (Size, Bottle, AND at least ONE perfume)
-    const checkoutBtn = document.getElementById('checkout-button');
-    if (checkoutBtn) {
-        checkoutBtn.disabled = !orderData.size || !orderData.bottle || 
-                             (!orderData.menPerfume && !orderData.womenPerfume);
-    }
-}
-
-function initializeCheckout() {
-  const checkoutBtn = document.getElementById('checkout-button');
-  const customerForm = document.getElementById('customer-form');
-  const orderSummary = document.querySelector('.order-summary-card');
-  
-  if (checkoutBtn) {
-    checkoutBtn.addEventListener('click', () => {
-      if (orderSummary) {
-        orderSummary.style.display = 'none';
-      }
-      if (customerForm) {
-        customerForm.style.display = 'block';
-        customerForm.scrollIntoView({ behavior: 'smooth' });
-      }
-    });
-  }
-    // ... الكود الأصلي
-    const checkoutBtn = document.getElementById('checkout-button');
-    const customerForm = document.getElementById('customer-form');
-    const orderSummary = document.querySelector('.order-summary-card');
-    
-    if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', () => {
-            if (orderSummary) {
-                orderSummary.style.display = 'none';
-            }
-            if (customerForm) {
-                customerForm.style.display = 'block';
-                customerForm.scrollIntoView({ behavior: 'smooth' });
-            }
-        });
-    }
-}
-
-function initializeOrderForm() {
-  const form = document.getElementById('order-form');
-  
-  if (form) {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const submitBtn = document.getElementById('submit-order');
-      const originalText = submitBtn.innerHTML;
-      
-      // Get form data
-      const name = document.getElementById('customer-name').value;
-      const phone = document.getElementById('customer-phone').value;
-      const address = document.getElementById('customer-address').value;
-      
-      // Show loading state
-      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-      submitBtn.disabled = true;
-      
-      // Prepare WhatsApp message
-      const message = formatWhatsAppMessage({
-        name,
-        phone,
-        address,
-        ...orderData
-      });
-      
-      // Send to WhatsApp
-      const whatsappUrl = `https://wa.me/201055741189?text=${encodeURIComponent(message)}`;
-      window.open(whatsappUrl, '_blank');
-      
-      // Try to send to Google Sheets
-      try {
-        await sendToGoogleSheets({
-          name,
-          phone,
-          address,
-          ...orderData
-    // ... الكود الأصلي
-    const form = document.getElementById('order-form');
-    
-    if (form) {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const submitBtn = document.getElementById('submit-order');
-            const originalText = submitBtn.innerHTML;
-            
-            // Get form data
-            const name = document.getElementById('customer-name').value;
-            const phone = document.getElementById('customer-phone').value;
-            const address = document.getElementById('customer-address').value;
-            
-            // Show loading state
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-            submitBtn.disabled = true;
-            
-            // Prepare WhatsApp message
-            const message = formatWhatsAppMessage({
-                name,
-                phone,
-                address,
-                ...orderData
-            });
-            
-            // // Send to WhatsApp
-            // const whatsappUrl = `https://wa.me/201055741189?text=${encodeURIComponent(message)}`;
-            // window.open(whatsappUrl, '_blank');
-            
-            // Try to send to Google Sheets
-           // داخل دالة initializeOrderForm عند الإرسال
-// ...
-// تجميع كل العطور المختارة في حقل واحد يسمى 'perfume'
-const selectedPerfumes = [];
-if (orderData.menPerfume) {
-    selectedPerfumes.push(`Men's: ${orderData.menPerfume}`);
-}
-if (orderData.womenPerfume) {
-    selectedPerfumes.push(`Women's: ${orderData.womenPerfume}`);
-}
-
-// بناء كائن البيانات للإرسال
-const payload = {
-    name,
-    phone,
-    address,
-    size: orderData.size,
-    bottle: orderData.bottle,
-    // 🔥 هذا هو التعديل الأساسي: دمج العطور وتسمية حقل السعر بشكل صحيح
-    perfume: selectedPerfumes.join(' | ') || 'No Perfume Selected', // دمج العطور
-    total: orderData.totalPrice // إعادة تسمية totalPrice إلى total
-};
-
-
-// Try to send to Google Sheets
-try {
-    await sendToGoogleSheets(payload); // ✅ إرسال الكائن الجديد
-    // ...
-                
-                showNotification('Order sent successfully! 🎉', 'success');
-                form.reset();
-                resetCustomizer();
-            } catch (error) {
-                console.error('Error sending to sheets:', error);
-                showNotification('Order sent via WhatsApp!', 'success');
-            }
-            
-            // Reset button
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-        });
-        
-        showNotification('Order sent successfully! 🎉', 'success');
-        form.reset();
-        resetCustomizer();
-      } catch (error) {
-        console.error('Error sending to sheets:', error);
-        showNotification('Order sent via WhatsApp!', 'success');
-      }
-      
-      // Reset button
-      submitBtn.innerHTML = originalText;
-      submitBtn.disabled = false;
-    });
-  }
-    }
-}
-
-function formatWhatsAppMessage(data) {
-  const items = [];
-  
-  if (data.size) items.push(`📏 Size: ${data.size}`);
-  if (data.bottle) items.push(`🍾 Bottle: ${data.bottle}`);
-  if (data.menPerfume) items.push(`👨 Men's: ${data.menPerfume}`);
-  if (data.womenPerfume) items.push(`👩 Women's: ${data.womenPerfume}`);
-  
-  return `🎯 *NEW ORDER - VINDEX*
-    // ... الكود الأصلي (No changes)
-    const items = [];
-    
-    if (data.size) items.push(`📏 Size: ${data.size}`);
-    if (data.bottle) items.push(`🍾 Bottle: ${data.bottle}`);
-    if (data.menPerfume) items.push(`👨 Men's: ${data.menPerfume}`);
-    if (data.womenPerfume) items.push(`👩 Women's: ${data.womenPerfume}`);
-    
-    return `🎯 *NEW ORDER - VINDEX*
-━━━━━━━━━━━━━━━
-👤 *Customer Details*
-Name: ${data.name}
-@@ -394,310 +542,328 @@ ${items.join('\n')}
-}
-
-async function sendToGoogleSheets(data) {
-  const scriptURL = 'YOUR_GOOGLE_SCRIPT_URL'; // Replace with actual URL
-  
-  const response = await fetch(scriptURL, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data)
-  });
-  
-  return response;
-    // ... الكود الأصلي (No changes)
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbz_ZF0iFigVac8FBUbP4RpByZ0l77kPqlRCpWtau_-ntduVfs6zAyWs5CJjuIsboH0Umg/exec'; // Replace with actual URL
-    
-    const response = await fetch(scriptURL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-    });
-    
-    return response;
-}
-
-function resetCustomizer() {
-  // Reset all selections
-  orderData = {
-    size: null,
-    bottle: null,
-    menPerfume: null,
-    womenPerfume: null,
-    totalPrice: 0
-  };
-  
-  // Reset UI
-  currentStep = 1;
-  updateStepDisplay();
-  
-  document.querySelectorAll('.option-card').forEach(card => {
-    card.classList.remove('selected');
-  });
-  
-  document.querySelectorAll('select').forEach(select => {
-    select.value = '';
-  });
-  
-  updateOrderSummary();
-  
-  // Hide forms
-  document.getElementById('customer-form').style.display = 'none';
-  document.querySelector('.order-summary-card').style.display = 'block';
-    // ... الكود الأصلي
-    // Reset all selections
-    orderData = {
-        size: null,
-        bottle: null,
-        menPerfume: null,
-        womenPerfume: null,
-        totalPrice: 0
-    };
-    
-    // Reset UI
-    currentStep = 1;
-    updateStepDisplay();
-    
-    document.querySelectorAll('.option-card').forEach(card => {
-        card.classList.remove('selected');
-    });
-    
-    document.querySelectorAll('select').forEach(select => {
-        select.value = '';
-    });
-    
-    updateOrderSummary();
-    
-    // Hide forms
-    document.getElementById('customer-form').style.display = 'none';
-    document.querySelector('.order-summary-card').style.display = 'block';
-}
-
-// =====================
-// Reviews Swiper
-// Reviews Swiper (No changes)
-// =====================
-function initializeReviewsSwiper() {
-  if (typeof Swiper !== 'undefined') {
-    new Swiper('.reviews-swiper', {
-      slidesPerView: 1,
-      spaceBetween: 30,
-      loop: true,
-      autoplay: {
-        delay: 5000,
-        disableOnInteraction: false,
-      },
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
-      },
-      breakpoints: {
-        640: {
-          slidesPerView: 2,
-        },
-        1024: {
-          slidesPerView: 3,
-        },
-      },
-    });
-  }
-    // ... الكود الأصلي
-    if (typeof Swiper !== 'undefined') {
-        new Swiper('.reviews-swiper', {
-            slidesPerView: 1,
-            spaceBetween: 30,
-            loop: true,
-            autoplay: {
-                delay: 5000,
-                disableOnInteraction: false,
-            },
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
-            breakpoints: {
-                640: {
-                    slidesPerView: 2,
-                },
-                1024: {
-                    slidesPerView: 3,
-                },
-            },
-        });
-    }
-}
-
-// =====================
-// Back to Top Button
-// Back to Top Button (No changes)
-// =====================
-function initializeBackToTop() {
-  const backToTopBtn = document.getElementById('backToTop');
-  
-  if (backToTopBtn) {
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 300) {
-        backToTopBtn.classList.add('show');
-      } else {
-        backToTopBtn.classList.remove('show');
-      }
-    });
-    // ... الكود الأصلي
-    const backToTopBtn = document.getElementById('backToTop');
-
-    backToTopBtn.addEventListener('click', () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-  }
-    if (backToTopBtn) {
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                backToTopBtn.classList.add('show');
-            } else {
-                backToTopBtn.classList.remove('show');
-            }
-        });
-        
-        backToTopBtn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-    }
-}
-
-// =====================
-// Initialize AOS
-// Initialize AOS (No changes)
-// =====================
-function initializeAOS() {
-  if (typeof AOS !== 'undefined') {
-    AOS.init({
-      duration: 800,
-      easing: 'ease-in-out',
-      once: true,
-      offset: 100,
-    });
-  }
-    // ... الكود الأصلي
-    if (typeof AOS !== 'undefined') {
-        AOS.init({
-            duration: 800,
-            easing: 'ease-in-out',
-            once: true,
-            offset: 100,
-        });
-    }
-}
-
-// =====================
-// Smooth Scroll
-// Smooth Scroll (No changes)
-// =====================
-function initializeSmoothScroll() {
+  // ===================================
+  // SMOOTH SCROLLING
+  // ===================================
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
       e.preventDefault();
       const target = document.querySelector(this.getAttribute('href'));
-      
       if (target) {
-        const offsetTop = target.offsetTop - 80; // Account for fixed header
-        
+        const offset = 80;
+        const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
         window.scrollTo({
-          top: offsetTop,
+          top: targetPosition,
           behavior: 'smooth'
-    // ... الكود الأصلي
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            
-            if (target) {
-                const offsetTop = target.offsetTop - 80; // Account for fixed header
-                
-                window.scrollTo({
-                    top: offsetTop,
-                    behavior: 'smooth'
-                });
-            }
         });
       }
     });
   });
-}
 
-// =====================
-// Notification System
-// Notification System (No changes)
-// =====================
-function showNotification(message, type = 'info') {
-  // Create notification element
-  const notification = document.createElement('div');
-  notification.className = `notification notification-${type}`;
-  notification.innerHTML = `
-    <div class="notification-content">
-      <i class="fas ${getNotificationIcon(type)}"></i>
-      <span>${message}</span>
-    </div>
-  `;
+  // ===================================
+  // COLLECTION CARD LINKS
+  // ===================================
+  const cardButtons = document.querySelectorAll('.card-btn');
+  cardButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const category = btn.dataset.target;
+      
+      // Scroll to order section
+      document.getElementById('order').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      
+      // Wait for scroll then trigger category selection
+      setTimeout(() => {
+        const categoryBtn = document.querySelector(`.category-btn[data-category="${category}"]`);
+        if (categoryBtn) {
+          categoryBtn.click();
+        }
+      }, 800);
+    });
+  });
+
+  // ===================================
+  // ORDER SYSTEM
+  // ===================================
   
-  // Add styles
-  const styles = `
-    .notification {
-      position: fixed;
-      top: 100px;
-      right: 20px;
-      background: var(--black-secondary);
-      color: var(--text-light);
-      padding: 1rem 1.5rem;
-      border-radius: 10px;
-      box-shadow: var(--shadow-lg);
-      z-index: 9999;
-      animation: slideIn 0.3s ease;
-      border-left: 4px solid;
-      max-width: 300px;
-    }
-    // ... الكود الأصلي
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.innerHTML = `
-      <div class="notification-content">
-        <i class="fas ${getNotificationIcon(type)}"></i>
-        <span>${message}</span>
-      </div>
-    `;
+  // Google Sheets Configuration
+  const SHEET_ID = '1nyF7bI1i80KWQoa2nE6Xv9-JFKfq8wiptxuzV3w3SvE';
+  
+  // Sheet names (make sure these match exactly with your Google Sheets tab names)
+  const MEN_SHEET_NAME = 'Men Perfumes';
+  const WOMEN_SHEET_NAME = 'Women Perfume';
 
-    .notification-success {
-      border-color: #4CAF50;
+  // State
+  let selectedCategory = null;
+  let selectedPerfume = null;
+  let selectedPrice = null;
+  let perfumesData = {
+    men: [],
+    women: []
+  };
+
+  // DOM Elements
+  const stepCategory = document.getElementById('step-category');
+  const stepPerfume = document.getElementById('step-perfume');
+  const stepDetails = document.getElementById('step-details');
+  const stepSuccess = document.getElementById('step-success');
+  
+  const categoryBtns = document.querySelectorAll('.category-btn');
+  const backToCategoryBtn = document.getElementById('back-to-category');
+  const backToPerfumeBtn = document.getElementById('back-to-perfume');
+  
+  const loadingSpinner = document.getElementById('loading-spinner');
+  const perfumeGrid = document.getElementById('perfume-grid');
+  const perfumeStepTitle = document.getElementById('perfume-step-title');
+  
+  const summaryPerfumeName = document.getElementById('summary-perfume-name');
+  const summaryPerfumePrice = document.getElementById('summary-perfume-price');
+  
+  const customerForm = document.getElementById('customer-form');
+  const submitOrderBtn = document.getElementById('submit-order');
+  const newOrderBtn = document.getElementById('new-order');
+
+  // Parse CSV text to array of objects
+  function parseCSV(csvText) {
+    const lines = csvText.trim().split('\n');
+    const perfumes = [];
+    
+    // Skip header row (index 0)
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      
+      // Handle CSV with possible quoted values
+      let name = '';
+      let price = 0;
+      
+      // Simple CSV parsing (handles most cases)
+      const match = line.match(/^"?([^",]*)"?,\s*"?(\d+)"?/);
+      if (match) {
+        name = match[1].trim();
+        price = parseInt(match[2]) || 0;
+      } else {
+        // Fallback: split by comma
+        const parts = line.split(',');
+        if (parts.length >= 2) {
+          name = parts[0].replace(/"/g, '').trim();
+          price = parseInt(parts[1].replace(/"/g, '').trim()) || 0;
+        }
+      }
+      
+      if (name && price > 0) {
+        perfumes.push({ name, price });
+      }
     }
     
-    .notification-warning {
-      border-color: var(--gold-primary);
-    }
-    // Add styles
-    const styles = `
-      .notification {
-        position: fixed;
-        top: 100px;
-        right: 20px;
-        background: var(--black-secondary);
-        color: var(--text-light);
-        padding: 1rem 1.5rem;
-        border-radius: 10px;
-        box-shadow: var(--shadow-lg);
-        z-index: 9999;
-        animation: slideIn 0.3s ease;
-        border-left: 4px solid;
-        max-width: 300px;
-      }
-      
-      .notification-success {
-        border-color: #4CAF50;
-      }
-      
-      .notification-warning {
-        border-color: var(--gold-primary);
-      }
-      
-      .notification-error {
-        border-color: #f44336;
-      }
-      
-      .notification-content {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-      }
-      
-      @keyframes slideIn {
-        from {
-          transform: translateX(100%);
-          opacity: 0;
-        }
-        to {
-          transform: translateX(0);
-          opacity: 1;
-        }
-      }
-    `;
-
-    .notification-error {
-      border-color: #f44336;
-    // Add styles if not already added
-    if (!document.getElementById('notification-styles')) {
-        const styleSheet = document.createElement('style');
-        styleSheet.id = 'notification-styles';
-        styleSheet.textContent = styles;
-        document.head.appendChild(styleSheet);
-    }
-
-    .notification-content {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    // Add to DOM
-    document.body.appendChild(notification);
-
-    @keyframes slideIn {
-      from {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-  `;
-  
-  // Add styles if not already added
-  if (!document.getElementById('notification-styles')) {
-    const styleSheet = document.createElement('style');
-    styleSheet.id = 'notification-styles';
-    styleSheet.textContent = styles;
-    document.head.appendChild(styleSheet);
+    return perfumes;
   }
-  
-  // Add to DOM
-  document.body.appendChild(notification);
-  
-  // Remove after 3 seconds
-  setTimeout(() => {
-    notification.style.animation = 'slideOut 0.3s ease';
-    // Remove after 3 seconds
-    setTimeout(() => {
-      notification.remove();
-    }, 300);
-  }, 3000);
-        // Simple slideOut animation removal (assuming CSS handles slideOut)
-        const slideOutKeyframes = `@keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }`;
-        const tempStyle = document.createElement('style');
-        tempStyle.textContent = slideOutKeyframes;
-        document.head.appendChild(tempStyle);
+
+  // Fetch perfumes using JSONP approach (works without CORS)
+  async function fetchPerfumesJSONP(category) {
+    return new Promise((resolve) => {
+      const sheetName = category === 'men' ? MEN_SHEET_NAME : WOMEN_SHEET_NAME;
+      const callbackName = 'googleSheetCallback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      
+      // Create callback function
+      window[callbackName] = function(data) {
+        try {
+          const rows = data.table.rows;
+          const perfumes = rows
+            .filter(row => row.c && row.c[0] && row.c[0].v)
+            .map(row => ({
+              name: String(row.c[0]?.v || '').trim(),
+              price: parseInt(row.c[1]?.v) || 0
+            }))
+            .filter(p => p.name && p.price > 0);
+          
+          console.log(`Parsed ${perfumes.length} perfumes from ${sheetName}`);
+          resolve(perfumes);
+        } catch (e) {
+          console.error('Error parsing JSONP:', e);
+          resolve([]);
+        }
         
-        notification.style.animation = 'slideOut 0.3s ease';
+        // Cleanup
+        delete window[callbackName];
+        const script = document.getElementById(callbackName);
+        if (script) script.remove();
+      };
+      
+      // Create script tag for JSONP
+      const script = document.createElement('script');
+      script.id = callbackName;
+      const encodedSheetName = encodeURIComponent(sheetName);
+      script.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json;responseHandler:${callbackName}&sheet=${encodedSheetName}`;
+      
+      script.onerror = () => {
+        console.error('JSONP script load failed for sheet:', sheetName);
+        delete window[callbackName];
+        const s = document.getElementById(callbackName);
+        if (s) s.remove();
+        resolve([]);
+      };
+      
+      document.head.appendChild(script);
+      
+      // Timeout after 10 seconds
+      setTimeout(() => {
+        if (window[callbackName]) {
+          console.log('JSONP timeout for sheet:', sheetName);
+          delete window[callbackName];
+          const s = document.getElementById(callbackName);
+          if (s) s.remove();
+          resolve([]);
+        }
+      }, 10000);
+    });
+  }
+
+  // Main fetch function with fallback
+  async function fetchPerfumes(category) {
+    try {
+      // Try JSONP approach first
+      const perfumes = await fetchPerfumesJSONP(category);
+      
+      if (perfumes.length > 0) {
+        console.log(`Loaded ${perfumes.length} ${category} perfumes from Google Sheets`);
+        return perfumes;
+      }
+      
+      throw new Error('No perfumes returned');
+    } catch (error) {
+      console.error('Error fetching perfumes:', error);
+      console.log('Using fallback data...');
+      return getFallbackPerfumes(category);
+    }
+  }
+
+  // Fallback perfume data in case Google Sheets doesn't work
+  function getFallbackPerfumes(category) {
+    if (category === 'men') {
+      return [
+        { name: "Sauvage Dior EDT", price: 350 },
+        { name: "One Million Paco Rabanne", price: 350 },
+        { name: "Versace Eros", price: 350 },
+        { name: "Bleu de Chanel", price: 350 },
+        { name: "YSL Y", price: 350 },
+        { name: "Invictus", price: 350 },
+        { name: "Acqua Di Gio", price: 350 },
+        { name: "Stronger With You", price: 350 },
+        { name: "Dunhill Desire Red", price: 350 },
+        { name: "Mont Blanc Legend", price: 350 },
+        { name: "Club De Nuit Intense", price: 350 },
+        { name: "Hugo Boss Bottled", price: 350 },
+        { name: "Lacoste Blanc", price: 350 },
+        { name: "Givenchy Gentlemen", price: 350 },
+        { name: "Azzaro Wanted", price: 350 },
+        { name: "Bvlgari Man in Black", price: 350 },
+        { name: "Rasasi Hawas", price: 350 },
+        { name: "Creed Aventus", price: 550 },
+        { name: "Sauvage Dior Elixir", price: 550 },
+        { name: "Oud Wood Tom Ford", price: 550 },
+        { name: "Tuscan Leather Tom Ford", price: 550 },
+        { name: "Amouage Interlude", price: 550 },
+        { name: "Parfums de Marly Layton", price: 550 },
+        { name: "Tobacco Vanille Tom Ford", price: 550 },
+        { name: "Nishane Hacivat", price: 550 },
+        { name: "Initio Rehab", price: 550 },
+        { name: "Roja Elysium", price: 550 }
+      ];
+    } else {
+      return [
+        { name: "Vanilla Musk", price: 350 },
+        { name: "Sweet Rose", price: 350 },
+        { name: "Fresh Citrus", price: 350 },
+        { name: "White Jasmine", price: 350 },
+        { name: "Ocean Breeze", price: 350 },
+        { name: "Cherry Blossom", price: 350 },
+        { name: "Peach Garden", price: 350 },
+        { name: "Pink Berry", price: 350 },
+        { name: "Soft Musk", price: 350 },
+        { name: "Coconut Dream", price: 350 },
+        { name: "Floral Fantasy", price: 350 },
+        { name: "Lavender Sky", price: 350 },
+        { name: "Berry Vanilla", price: 350 },
+        { name: "White Musk", price: 350 },
+        { name: "Baccarat Rouge 540", price: 550 },
+        { name: "Delina", price: 550 },
+        { name: "Oriana", price: 550 },
+        { name: "Rose Prick", price: 550 },
+        { name: "Velvet Orchid", price: 550 },
+        { name: "L'interdit", price: 550 },
+        { name: "Black Saffron", price: 550 }
+      ];
+    }
+  }
+
+  // Show step
+  function showStep(step) {
+    [stepCategory, stepPerfume, stepDetails, stepSuccess].forEach(s => {
+      s.classList.add('hidden');
+    });
+    step.classList.remove('hidden');
+  }
+
+  // Render perfumes
+  function renderPerfumes(perfumes) {
+    perfumeGrid.innerHTML = '';
+    
+    if (perfumes.length === 0) {
+      perfumeGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: rgba(255,255,255,0.7);">
+          <p>No perfumes available at the moment.</p>
+          <p style="font-size: 0.9rem; margin-top: 10px;">Please try again later or contact us on WhatsApp.</p>
+        </div>
+      `;
+      return;
+    }
+    
+    perfumes.forEach(perfume => {
+      const item = document.createElement('div');
+      item.className = 'perfume-item';
+      item.dataset.name = perfume.name;
+      item.dataset.price = perfume.price;
+      item.innerHTML = `
+        <span class="perfume-name">${perfume.name}</span>
+        <span class="perfume-price">${perfume.price} EGP</span>
+      `;
+      
+      item.addEventListener('click', () => {
+        // Remove selection from others
+        document.querySelectorAll('.perfume-item').forEach(p => p.classList.remove('selected'));
+        // Add selection to clicked
+        item.classList.add('selected');
         
+        selectedPerfume = perfume.name;
+        selectedPrice = perfume.price;
+        
+        // Update summary
+        summaryPerfumeName.textContent = selectedPerfume;
+        summaryPerfumePrice.textContent = `${selectedPrice} EGP`;
+        
+        // Show details step
         setTimeout(() => {
-            notification.remove();
-            tempStyle.remove();
+          showStep(stepDetails);
         }, 300);
-    }, 3000);
-}
-
-function getNotificationIcon(type) {
-  switch(type) {
-    case 'success': return 'fa-check-circle';
-    case 'warning': return 'fa-exclamation-triangle';
-    case 'error': return 'fa-times-circle';
-    default: return 'fa-info-circle';
+      });
+      
+      perfumeGrid.appendChild(item);
+    });
   }
-    // ... الكود الأصلي
-    switch(type) {
-        case 'success': return 'fa-check-circle';
-        case 'warning': return 'fa-exclamation-triangle';
-        case 'error': return 'fa-times-circle';
-        default: return 'fa-info-circle';
+
+  // Category selection
+  categoryBtns.forEach(btn => {
+    btn.addEventListener('click', async () => {
+      selectedCategory = btn.dataset.category;
+      perfumeStepTitle.textContent = selectedCategory === 'men' ? 'Select Men\'s Perfume' : 'Select Women\'s Perfume';
+      
+      showStep(stepPerfume);
+      loadingSpinner.classList.remove('hidden');
+      perfumeGrid.innerHTML = '';
+      
+      // Check if we already have the data cached
+      if (perfumesData[selectedCategory].length > 0) {
+        loadingSpinner.classList.add('hidden');
+        renderPerfumes(perfumesData[selectedCategory]);
+      } else {
+        // Fetch from Google Sheets
+        const perfumes = await fetchPerfumes(selectedCategory);
+        perfumesData[selectedCategory] = perfumes;
+        loadingSpinner.classList.add('hidden');
+        renderPerfumes(perfumes);
+      }
+    });
+  });
+
+  // Back buttons
+  backToCategoryBtn.addEventListener('click', () => {
+    showStep(stepCategory);
+    selectedPerfume = null;
+    selectedPrice = null;
+  });
+
+  backToPerfumeBtn.addEventListener('click', () => {
+    showStep(stepPerfume);
+  });
+
+  // Form submission
+  customerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const name = document.getElementById('customer-name').value.trim();
+    const phone = document.getElementById('customer-phone').value.trim();
+    const address = document.getElementById('customer-address').value.trim();
+    
+    if (!name || !phone || !address) {
+      alert('Please fill in all fields');
+      return;
     }
-}
-
-// =====================
-// Performance Optimization
-// Performance Optimization (No changes)
-// =====================
-// Debounce function for scroll events
-function debounce(func, wait) {
-  let timeout;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    // ... الكود الأصلي
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
+    
+    // Disable button during submission
+    submitOrderBtn.disabled = true;
+    submitOrderBtn.innerHTML = '<span>Processing...</span>';
+    
+    // Prepare order data
+    const orderData = {
+      name,
+      phone,
+      address,
+      category: selectedCategory === 'men' ? "Men's" : "Women's",
+      perfume: selectedPerfume,
+      price: selectedPrice
     };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
+    
+    // Create WhatsApp message (using simple text without special characters)
+    const message = 
+      `*New Order - VINDEX*\n` +
+      `----------------\n` +
+      `*Name:* ${orderData.name}\n` +
+      `*Phone:* ${orderData.phone}\n` +
+      `*Address:* ${orderData.address}\n` +
+      `----------------\n` +
+      `*Category:* ${orderData.category}\n` +
+      `*Perfume:* ${orderData.perfume}\n` +
+      `*Price:* ${orderData.price} EGP\n` +
+      `----------------\n` +
+      `Thank you for choosing VINDEX!`;
+    
+    const whatsappURL = `https://wa.me/201055741189?text=${encodeURIComponent(message)}`;
+    
+    // Send order to Google Sheets using Google Apps Script
+    try {
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbzmGVGMh22jZBMP16Uq_Ym71NUFkcdNWlzMoe_7ID5rABbiuDuyINwfRS-ZSjzWQAH5/exec';
+      
+      const formData = new FormData();
+      formData.append('name', orderData.name);
+      formData.append('phone', orderData.phone);
+      formData.append('address', orderData.address);
+      formData.append('category', orderData.category);
+      formData.append('perfume', orderData.perfume);
+      formData.append('price', orderData.price);
+      
+      await fetch(scriptURL, {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors'
+      });
+      console.log('Order sent to Google Sheets');
+    } catch (error) {
+      console.log('Sheet logging error:', error);
+    }
+    
+    // Show success and open WhatsApp
+    showStep(stepSuccess);
+    
+    // Reset button
+    submitOrderBtn.disabled = false;
+    submitOrderBtn.innerHTML = `
+      <span>Complete Order</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    `;
+    
+    // Open WhatsApp in new tab
+    setTimeout(() => {
+      window.open(whatsappURL, '_blank');
+    }, 500);
+  });
+
+  // New order button
+  newOrderBtn.addEventListener('click', () => {
+    // Reset form
+    customerForm.reset();
+    selectedCategory = null;
+    selectedPerfume = null;
+    selectedPrice = null;
+    
+    // Show first step
+    showStep(stepCategory);
+    
+    // Scroll to order section
+    document.getElementById('order').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // ===================================
+  // INTERSECTION OBSERVER FOR ANIMATIONS
+  // ===================================
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
   };
-}
 
-// Optimize scroll events
-window.addEventListener('scroll', debounce(() => {
-  // Handle any scroll-based animations or updates
-    // Handle any scroll-based animations or updates
-}, 10));
-
-// =====================
-// Lazy Loading Images
-// Lazy Loading Images (No changes)
-// =====================
-if ('IntersectionObserver' in window) {
-  const imageObserver = new IntersectionObserver((entries, observer) => {
+  const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        const img = entry.target;
-        img.src = img.dataset.src || img.src;
-        img.classList.add('loaded');
-        observer.unobserve(img);
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
       }
-    // ... الكود الأصلي
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src || img.src;
-                img.classList.add('loaded');
-                observer.unobserve(img);
-            }
-        });
     });
-    
-    document.querySelectorAll('img[data-src]').forEach(img => {
-        imageObserver.observe(img);
-    });
-  });
-  
-  document.querySelectorAll('img[data-src]').forEach(img => {
-    imageObserver.observe(img);
-  });
-}
+  }, observerOptions);
 
-// =====================
-// Perfume Filters (Modified to work with dynamic Optgroups)
-// =====================
-function initializePerfumeFilters() {
-  const filterTabs = document.querySelectorAll('.filter-tab');
-  
-  filterTabs.forEach(tab => {
-    tab.addEventListener('click', function() {
-      const filter = this.dataset.filter;
-      const parent = this.closest('.custom-step');
-      const select = parent.querySelector('.perfume-select');
-      
-      // Update active tab
-      parent.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-      this.classList.add('active');
-      
-      // Filter options
-      if (select) {
-        const options = select.querySelectorAll('option');
-        const optgroups = select.querySelectorAll('optgroup');
-        
-        if (filter === 'all') {
-          // Show all options
-          options.forEach(opt => opt.style.display = '');
-          optgroups.forEach(grp => grp.style.display = '');
-        } else if (filter === 'classic') {
-          // Show only 200 EGP options
-          optgroups.forEach(grp => {
-            if (grp.label.includes('Classic')) {
-              grp.style.display = '';
-            } else {
-              grp.style.display = 'none';
-            }
-          });
-        } else if (filter === 'niche') {
-          // Show only 400 EGP options
-          optgroups.forEach(grp => {
-            if (grp.label.includes('Niche')) {
-              grp.style.display = '';
-            } else {
-              grp.style.display = 'none';
-    const filterTabs = document.querySelectorAll('.filter-tab');
-    
-    filterTabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            const filter = this.dataset.filter;
-            const parent = this.closest('.custom-step');
-            const select = parent.querySelector('.perfume-select');
-            
-            // Update active tab
-            parent.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Filter options (Optgroups)
-            if (select) {
-                const optgroups = select.querySelectorAll('optgroup');
-                
-                // Hide all options by default
-                optgroups.forEach(grp => grp.style.display = 'none');
-
-                if (filter === 'all') {
-                    // Show all optgroups
-                    optgroups.forEach(grp => grp.style.display = '');
-                } else if (filter === 'classic') {
-                    // Show only optgroups labeled 'Classic'
-                    optgroups.forEach(grp => {
-                        if (grp.label.includes('Classic')) {
-                            grp.style.display = '';
-                        }
-                    });
-                } else if (filter === 'niche') {
-                    // Show only optgroups labeled 'Niche'
-                    optgroups.forEach(grp => {
-                        if (grp.label.includes('Niche')) {
-                            grp.style.display = '';
-                        }
-                    });
-                }
-            }
-          });
-        }
-      }
-        });
-    });
+  // Observe sections for fade-in animation
+  document.querySelectorAll('section').forEach(section => {
+    section.style.opacity = '0';
+    section.style.transform = 'translateY(30px)';
+    section.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+    observer.observe(section);
   });
-}
-}
+
+  // Hero section should be visible immediately
+  document.querySelector('.hero').style.opacity = '1';
+  document.querySelector('.hero').style.transform = 'translateY(0)';
+
+  // ===================================
+  // PREFETCH PERFUME DATA
+  // ===================================
+  // Prefetch data after page load for faster UX
+  setTimeout(async () => {
+    if (perfumesData.men.length === 0) {
+      perfumesData.men = await fetchPerfumes('men');
+    }
+    if (perfumesData.women.length === 0) {
+      perfumesData.women = await fetchPerfumes('women');
+    }
+    console.log('Perfume data prefetched');
+  }, 2000);
+});
