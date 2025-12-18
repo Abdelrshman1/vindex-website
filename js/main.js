@@ -435,7 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Send order to Google Sheets using Google Apps Script
     try {
-      const scriptURL = 'https://script.google.com/macros/s/AKfycbzmGVGMh22jZBMP16Uq_Ym71NUFkcdNWlzMoe_7ID5rABbiuDuyINwfRS-ZSjzWQAH5/exec';
+      const scriptURL = 'https://script.google.com/macros/library/d/1ArjQ7r3bPkslTGPuvmEg_EqnzX2MPAsMJ91a9k-ry_Ul7I-KPsCPTxko/1';
       
       const formData = new FormData();
       formData.append('name', orderData.name);
