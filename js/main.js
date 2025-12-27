@@ -470,8 +470,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Open WhatsApp in new tab
   /*  setTimeout(() => {
       window.open(whatsappURL, '_blank');
-    }, 500);
-  }); */
+    }, 500);  */
+  }); 
 
   // New order button
   newOrderBtn.addEventListener('click', () => {
