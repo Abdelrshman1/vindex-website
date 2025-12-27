@@ -418,7 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     // Create WhatsApp message (using simple text without special characters)
-    const message = 
+  /*  const message = 
       `*New Order - VINDEX*\n` +
       `----------------\n` +
       `*Name:* ${orderData.name}\n` +
@@ -429,13 +429,13 @@ document.addEventListener('DOMContentLoaded', () => {
       `*Perfume:* ${orderData.perfume}\n` +
       `*Price:* ${orderData.price} EGP\n` +
       `----------------\n` +
-      `Thank you for choosing VINDEX!`;
+      `Thank you for choosing VINDEX!`; */
     
-    const whatsappURL = `https://wa.me/201055741189?text=${encodeURIComponent(message)}`;
+  //  const whatsappURL = `https://wa.me/201055741189?text=${encodeURIComponent(message)}`;
     
     // Send order to Google Sheets using Google Apps Script
     try {
-      const scriptURL = 'https://script.google.com/macros/s/AKfycbz-Llq0LTXdk4fWHXEaS7mEX9MVCO6Q2_7BBQwHifvS0QFhEO4bBQGqDdwinFAf7aPQ/exec';
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbxmwMmepgNIyVbc0sspTtONXfSeMbXXCixmtCCIW8HvudfssC4xsjT6NQMG7DZmoGBQ/exec';
       
       const formData = new FormData();
       formData.append('name', orderData.name);
@@ -468,10 +468,10 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     
     // Open WhatsApp in new tab
-    setTimeout(() => {
+  /*  setTimeout(() => {
       window.open(whatsappURL, '_blank');
     }, 500);
-  });
+  }); */
 
   // New order button
   newOrderBtn.addEventListener('click', () => {
