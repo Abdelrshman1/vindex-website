@@ -466,12 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <path d="M5 12h14M12 5l7 7-7 7"/>
       </svg>
     `;
-    
-    // Open WhatsApp in new tab
-  /*  setTimeout(() => {
-      window.open(whatsappURL, '_blank');
-    }, 500);  */
-  }); 
+     }); 
 
   // New order button
   newOrderBtn.addEventListener('click', () => {
